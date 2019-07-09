@@ -10,6 +10,16 @@ def get_glyph(glyph_set, cmap, char):
         return glyph_set[glyph_name]
 
 
+def get_model_output(phrase):
+    # ここにモデルに投げるコード
+    # 暫定的に'タピオカ'に対して'⿰女甘'を出力, それ以外はそのまま返す
+    if phrase == 'タピオカ':
+        seq = '⿰女甘'
+    else:
+        seq = phrase
+    return seq
+
+
 # settings
 font = TTFont('/System/Library/Fonts/ヒラギノ明朝 ProN.ttc', fontNumber=0)
 glyph_set = font.getGlyphSet()
@@ -27,15 +37,15 @@ def index():
 @app.route('/post', methods=['POST'])
 def post():
     phrase = request.form['data']
-    # ここにモデルに投げるコードが入る
-    # test_chars = phrase[:3]
+    seq = get_model_output(phrase)
     paths = []
 
-    shape = shape_dict.get(phrase[0], 0)
+    shape = shape_dict.get(seq[0], 0)
     if shape:
-        phrase = phrase[1:(3 if shape not in {3, 4} else 4)]
+        # TODO: 入れ子の考慮
+        seq = seq[1:(3 if shape not in {3, 4} else 4)]
 
-    for char in phrase:
+    for char in seq:
         recording_pen = RecordingPen()
         glyph = get_glyph(glyph_set, cmap, char)
         if glyph:
