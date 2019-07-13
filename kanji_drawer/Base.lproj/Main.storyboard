@@ -1,68 +1,207 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
-    <device id="retina6_1" orientation="portrait">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="byy-Xl-DNQ">
+    <device id="ipad10_5" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="Stack View standard spacing" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--kanji_generator-->
         <scene sceneID="tne-QT-ifu">
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="kanji_drawer" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="834" height="1112"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Text Field" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="VFt-VG-dF2">
-                                <rect key="frame" x="50" y="94" width="200" height="50"/>
+                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="249" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Text Field" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="VFt-VG-dF2">
+                                <rect key="frame" x="50" y="185" width="524" height="50"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="200" id="Frx-uo-hUF"/>
                                     <constraint firstAttribute="height" constant="50" id="KrD-KK-IHt"/>
                                 </constraints>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" name="HiraMinProN-W3" family="Hiragino Mincho ProN" pointSize="24"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aUW-7i-Z6m">
-                                <rect key="frame" x="350" y="104" width="30" height="30"/>
-                                <state key="normal" title="Go"/>
-                                <connections>
-                                    <action selector="sendPhrase:" destination="BYZ-38-t0r" eventType="touchUpInside" id="u0D-E6-xsS"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7KZ-Eh-678">
-                                <rect key="frame" x="347" y="164" width="36" height="30"/>
-                                <state key="normal" title="Clear"/>
-                                <connections>
-                                    <action selector="clearCanvas:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Zpw-Ul-PKo"/>
-                                </connections>
-                            </button>
+                            <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="uBq-m2-RcB">
+                                <rect key="frame" x="624" y="185" width="160" height="50"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aUW-7i-Z6m">
+                                        <rect key="frame" x="0.0" y="0.0" width="70" height="50"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="50" id="HJv-1w-UYf"/>
+                                            <constraint firstAttribute="width" constant="70" id="tk3-RK-kBa"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="HiraMinProN-W3" family="Hiragino Mincho ProN" pointSize="20"/>
+                                        <state key="normal" title="進"/>
+                                        <connections>
+                                            <action selector="sendPhrase:" destination="BYZ-38-t0r" eventType="touchUpInside" id="u0D-E6-xsS"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7KZ-Eh-678">
+                                        <rect key="frame" x="90" y="0.0" width="70" height="50"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="50" id="Dw4-AP-BCq"/>
+                                            <constraint firstAttribute="width" constant="70" id="FGN-Yb-pZ7"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="HiraMinProN-W3" family="Hiragino Mincho ProN" pointSize="20"/>
+                                        <state key="normal" title="戻"/>
+                                        <connections>
+                                            <action selector="clearCanvas:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Zpw-Ul-PKo"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Neural Kanji Generator (タイトル募)" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7rj-ml-CO6">
+                                <rect key="frame" x="50" y="95" width="734" height="40"/>
+                                <fontDescription key="fontDescription" name="HiraMinProN-W3" family="Hiragino Mincho ProN" pointSize="40"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Description" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="w0c-Pf-b79">
+                                <rect key="frame" x="50" y="335" width="130" height="24"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" relation="lessThanOrEqual" constant="500" id="3KZ-wt-nuS"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="HiraMinProN-W3" family="Hiragino Mincho ProN" pointSize="24"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Top 6 kanjis" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="d6j-f5-OxY">
+                                <rect key="frame" x="502" y="427" width="185.5" height="32"/>
+                                <fontDescription key="fontDescription" name="HiraMinProN-W3" family="Hiragino Mincho ProN" pointSize="32"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="vSf-V9-iYT">
+                                <rect key="frame" x="550" y="509" width="89" height="106"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="ccL-qS-ZAh">
+                                        <rect key="frame" x="0.0" y="0.0" width="89" height="30"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="249" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FyN-hW-0Ob">
+                                                <rect key="frame" x="0.0" y="0.0" width="41" height="30"/>
+                                                <state key="normal" title="漢字1"/>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hcz-bQ-Ulg">
+                                                <rect key="frame" x="49" y="0.0" width="40" height="30"/>
+                                                <state key="normal" title="漢字2"/>
+                                            </button>
+                                        </subviews>
+                                        <viewLayoutGuide key="safeArea" id="Qur-px-JFF"/>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="dmH-6p-z6R">
+                                        <rect key="frame" x="0.0" y="38" width="89" height="30"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Oqg-9o-Jj5">
+                                                <rect key="frame" x="0.0" y="0.0" width="40" height="30"/>
+                                                <state key="normal" title="漢字3"/>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lk0-cR-G35">
+                                                <rect key="frame" x="48" y="0.0" width="41" height="30"/>
+                                                <state key="normal" title="漢字4"/>
+                                            </button>
+                                        </subviews>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="lov-vs-2zN">
+                                        <rect key="frame" x="0.0" y="76" width="89" height="30"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="249" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pTJ-t2-4At">
+                                                <rect key="frame" x="0.0" y="0.0" width="41" height="30"/>
+                                                <state key="normal" title="漢字5"/>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5DT-bb-vjy">
+                                                <rect key="frame" x="49" y="0.0" width="40" height="30"/>
+                                                <state key="normal" title="漢字6"/>
+                                            </button>
+                                        </subviews>
+                                        <viewLayoutGuide key="safeArea" id="UI4-8z-Qm9"/>
+                                    </stackView>
+                                </subviews>
+                            </stackView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <gestureRecognizers/>
                         <constraints>
-                            <constraint firstItem="aUW-7i-Z6m" firstAttribute="centerY" secondItem="VFt-VG-dF2" secondAttribute="centerY" id="CiR-vy-q0Z"/>
-                            <constraint firstItem="7KZ-Eh-678" firstAttribute="top" secondItem="aUW-7i-Z6m" secondAttribute="bottom" constant="30" id="Mgr-Pn-yaM"/>
-                            <constraint firstItem="7KZ-Eh-678" firstAttribute="centerX" secondItem="aUW-7i-Z6m" secondAttribute="centerX" id="TrR-X0-93c"/>
-                            <constraint firstItem="aUW-7i-Z6m" firstAttribute="leading" secondItem="VFt-VG-dF2" secondAttribute="trailing" constant="100" id="cRf-OV-gWU"/>
+                            <constraint firstItem="w0c-Pf-b79" firstAttribute="top" secondItem="VFt-VG-dF2" secondAttribute="bottom" constant="100" id="J6p-9J-ypt"/>
+                            <constraint firstItem="VFt-VG-dF2" firstAttribute="top" secondItem="7rj-ml-CO6" secondAttribute="bottom" constant="50" id="L0Y-Rk-IQl"/>
+                            <constraint firstItem="vSf-V9-iYT" firstAttribute="leading" secondItem="w0c-Pf-b79" secondAttribute="leading" constant="500" id="OTH-ei-rPt"/>
+                            <constraint firstItem="d6j-f5-OxY" firstAttribute="centerX" secondItem="vSf-V9-iYT" secondAttribute="centerX" id="Orb-HU-nkJ"/>
+                            <constraint firstItem="d6j-f5-OxY" firstAttribute="bottom" secondItem="w0c-Pf-b79" secondAttribute="bottom" constant="100" id="Qg6-0g-xVO"/>
+                            <constraint firstItem="uBq-m2-RcB" firstAttribute="centerY" secondItem="VFt-VG-dF2" secondAttribute="centerY" id="XBu-gY-vuZ"/>
+                            <constraint firstItem="VFt-VG-dF2" firstAttribute="leading" secondItem="7rj-ml-CO6" secondAttribute="leading" id="cy6-TP-apN"/>
                             <constraint firstItem="VFt-VG-dF2" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="50" id="d0J-dh-SDa"/>
-                            <constraint firstItem="VFt-VG-dF2" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="50" id="s1W-dP-83a"/>
+                            <constraint firstItem="w0c-Pf-b79" firstAttribute="leading" secondItem="VFt-VG-dF2" secondAttribute="leading" id="dBJ-gL-g5C"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="uBq-m2-RcB" secondAttribute="trailing" constant="50" id="k28-MO-Kd2"/>
+                            <constraint firstItem="uBq-m2-RcB" firstAttribute="trailing" secondItem="7rj-ml-CO6" secondAttribute="trailing" id="lcS-da-ZXH"/>
+                            <constraint firstItem="7rj-ml-CO6" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="75" id="mL2-UP-FPn"/>
+                            <constraint firstItem="uBq-m2-RcB" firstAttribute="leading" secondItem="VFt-VG-dF2" secondAttribute="trailing" constant="50" id="oft-Ff-zim"/>
+                            <constraint firstItem="vSf-V9-iYT" firstAttribute="top" secondItem="d6j-f5-OxY" secondAttribute="bottom" constant="50" id="pPP-1R-7JW"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="Xuw-DQ-zWG" appends="YES" id="617-Rp-q5Y"/>
+                        </connections>
                     </view>
+                    <tabBarItem key="tabBarItem" title="kanji_generator" image="tab1_icon" id="MVv-YV-M6j"/>
                     <connections>
                         <outlet property="clearButton" destination="7KZ-Eh-678" id="dqU-bb-JRd"/>
+                        <outlet property="descLabel" destination="w0c-Pf-b79" id="F38-Je-d22"/>
                         <outlet property="goButton" destination="aUW-7i-Z6m" id="bBh-OC-eyi"/>
                         <outlet property="phraseField" destination="VFt-VG-dF2" id="JxM-oR-giw"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="Xuw-DQ-zWG">
+                    <connections>
+                        <action selector="tapView:" destination="BYZ-38-t0r" id="pRc-h7-p8D"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="108.69565217391305" y="20.758928571428569"/>
+            <point key="canvasLocation" x="306" y="-626"/>
+        </scene>
+        <!--history-->
+        <scene sceneID="INr-E5-8eS">
+            <objects>
+                <viewController id="1dt-2i-qto" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="dKp-12-CeY">
+                        <rect key="frame" x="0.0" y="0.0" width="834" height="1112"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="ltk-HW-WEx"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="history" image="tab2_icon" id="JdH-Av-KEa"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="2LL-4j-gyC" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="306" y="169"/>
+        </scene>
+        <!--Tab Bar Controller-->
+        <scene sceneID="rDW-ai-aVA">
+            <objects>
+                <tabBarController id="byy-Xl-DNQ" sceneMemberID="viewController">
+                    <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="B1p-ha-AU9">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="49"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </tabBar>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="viewControllers" id="T4A-mj-vaB"/>
+                        <segue destination="1dt-2i-qto" kind="relationship" relationship="viewControllers" id="SEc-K4-Kos"/>
+                    </connections>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="HqZ-V8-1Pz" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-703" y="-128"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="tab1_icon" width="69" height="68"/>
+        <image name="tab2_icon" width="70" height="67"/>
+    </resources>
 </document>

@@ -10,6 +10,15 @@ import UIKit
 import Alamofire
 import SwiftyJSON
 
+extension UIColor {
+    class var osColorBlue: UIColor {
+        return UIColor(red: 0.0, green: 122.0/255.0, blue: 1.0, alpha: 0.8)
+    }
+    class var osColorRed: UIColor {
+        return UIColor(red: 1.0, green: 59.0/255.0, blue: 48.0/255.0, alpha: 0.8)
+    }
+}
+
 extension UIImage {
     
     // make an image upside-down
@@ -27,13 +36,14 @@ extension UIImage {
     
 }
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UITextFieldDelegate {
 
     @IBOutlet weak var phraseField: UITextField!
+    @IBOutlet weak var descLabel: UILabel!
     
     @IBOutlet weak var goButton: UIButton!
     @IBOutlet weak var clearButton: UIButton!
-    
+
     var kanjiPath = UIBezierPath()
     var addedView = [UIImageView]()
     
@@ -41,6 +51,25 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
+        // initial settings
+        // background
+        self.view.backgroundColor = UIColor(patternImage: UIImage(named: "washi")!)
+        
+        phraseField.delegate = self
+        
+        phraseField.text = "タピオカ"
+        phraseField.placeholder = "フレーズを入力"
+        phraseField.clearButtonMode = .whileEditing
+        phraseField.layer.cornerRadius = 10.0
+        
+        goButton.setTitleColor(.white, for: .normal)
+        goButton.backgroundColor = .osColorBlue
+        goButton.layer.cornerRadius = 5.0
+        clearButton.setTitleColor(.white, for: .normal)
+        clearButton.backgroundColor = .osColorRed
+        clearButton.layer.cornerRadius = 5.0
+        
+        descLabel.isHidden = true
     }
     
     @IBAction func sendPhrase(_ sender: Any) {
@@ -52,9 +81,13 @@ class ViewController: UIViewController {
         // ここでbezier pathの受け取りに成功
         self.getBezierPathFor(phrase: phrase, {kanjiData in
             let kanjiCanvas = self.drawKanji(CGRect(x: 0, y: 0, width: 300, height: 300), kanjiData: kanjiData)
-            // let kanjiCanvas = UIImageView(image: image)
-            kanjiCanvas.frame.origin = CGPoint(x: 100, y: 300)
+            
+            self.descLabel.text = "「\(phrase)」に近い意味の漢字"
+            self.descLabel.isHidden = false
+            
+            kanjiCanvas.frame.origin = CGPoint(x: 100, y: self.descLabel.frame.maxY + 75)
             kanjiCanvas.alpha = 0
+            
             self.view.addSubview(kanjiCanvas)
             self.addedView.append(kanjiCanvas)
         
@@ -66,6 +99,8 @@ class ViewController: UIViewController {
     }
     
     @IBAction func clearCanvas(_ sender: Any) {
+        
+        descLabel.isHidden = true
         
         if self.addedView.count > 0 {
             self.addedView.forEach {imView in
@@ -275,6 +310,16 @@ class ViewController: UIViewController {
             return UIImageView()
         }
         
+    }
+    
+    @IBAction func tapView(_ sender: UITapGestureRecognizer) {
+        view.endEditing(true)
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        view.endEditing(true)
+        sendPhrase(goButton!)
+        return false
     }
     
 }
