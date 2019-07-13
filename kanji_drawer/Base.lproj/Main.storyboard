@@ -7,7 +7,6 @@
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
-        <capability name="Stack View standard spacing" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -57,7 +56,7 @@
                                     </button>
                                 </subviews>
                             </stackView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Neural Kanji Generator (タイトル募)" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7rj-ml-CO6">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Neural Kanji Generator (仮)" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7rj-ml-CO6">
                                 <rect key="frame" x="50" y="95" width="734" height="40"/>
                                 <fontDescription key="fontDescription" name="HiraMinProN-W3" family="Hiragino Mincho ProN" pointSize="40"/>
                                 <nil key="textColor"/>
@@ -72,51 +71,51 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Top 6 kanjis" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="d6j-f5-OxY">
-                                <rect key="frame" x="502" y="427" width="185.5" height="32"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="上位六字" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="d6j-f5-OxY">
+                                <rect key="frame" x="581" y="427" width="128" height="32"/>
                                 <fontDescription key="fontDescription" name="HiraMinProN-W3" family="Hiragino Mincho ProN" pointSize="32"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="vSf-V9-iYT">
-                                <rect key="frame" x="550" y="509" width="89" height="106"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="vSf-V9-iYT">
+                                <rect key="frame" x="594.5" y="509" width="101" height="130"/>
                                 <subviews>
-                                    <stackView opaque="NO" contentMode="scaleToFill" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="ccL-qS-ZAh">
-                                        <rect key="frame" x="0.0" y="0.0" width="89" height="30"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="ccL-qS-ZAh">
+                                        <rect key="frame" x="0.0" y="0.0" width="101" height="30"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="249" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FyN-hW-0Ob">
                                                 <rect key="frame" x="0.0" y="0.0" width="41" height="30"/>
                                                 <state key="normal" title="漢字1"/>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hcz-bQ-Ulg">
-                                                <rect key="frame" x="49" y="0.0" width="40" height="30"/>
+                                                <rect key="frame" x="61" y="0.0" width="40" height="30"/>
                                                 <state key="normal" title="漢字2"/>
                                             </button>
                                         </subviews>
                                         <viewLayoutGuide key="safeArea" id="Qur-px-JFF"/>
                                     </stackView>
-                                    <stackView opaque="NO" contentMode="scaleToFill" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="dmH-6p-z6R">
-                                        <rect key="frame" x="0.0" y="38" width="89" height="30"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="dmH-6p-z6R">
+                                        <rect key="frame" x="0.0" y="50" width="101" height="30"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Oqg-9o-Jj5">
                                                 <rect key="frame" x="0.0" y="0.0" width="40" height="30"/>
                                                 <state key="normal" title="漢字3"/>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lk0-cR-G35">
-                                                <rect key="frame" x="48" y="0.0" width="41" height="30"/>
+                                                <rect key="frame" x="60" y="0.0" width="41" height="30"/>
                                                 <state key="normal" title="漢字4"/>
                                             </button>
                                         </subviews>
                                     </stackView>
-                                    <stackView opaque="NO" contentMode="scaleToFill" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="lov-vs-2zN">
-                                        <rect key="frame" x="0.0" y="76" width="89" height="30"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="lov-vs-2zN">
+                                        <rect key="frame" x="0.0" y="100" width="101" height="30"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="249" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pTJ-t2-4At">
                                                 <rect key="frame" x="0.0" y="0.0" width="41" height="30"/>
                                                 <state key="normal" title="漢字5"/>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5DT-bb-vjy">
-                                                <rect key="frame" x="49" y="0.0" width="40" height="30"/>
+                                                <rect key="frame" x="61" y="0.0" width="40" height="30"/>
                                                 <state key="normal" title="漢字6"/>
                                             </button>
                                         </subviews>
@@ -128,11 +127,11 @@
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <gestureRecognizers/>
                         <constraints>
+                            <constraint firstItem="vSf-V9-iYT" firstAttribute="centerX" secondItem="d6j-f5-OxY" secondAttribute="centerX" id="1fs-cH-Jeo"/>
                             <constraint firstItem="w0c-Pf-b79" firstAttribute="top" secondItem="VFt-VG-dF2" secondAttribute="bottom" constant="100" id="J6p-9J-ypt"/>
                             <constraint firstItem="VFt-VG-dF2" firstAttribute="top" secondItem="7rj-ml-CO6" secondAttribute="bottom" constant="50" id="L0Y-Rk-IQl"/>
-                            <constraint firstItem="vSf-V9-iYT" firstAttribute="leading" secondItem="w0c-Pf-b79" secondAttribute="leading" constant="500" id="OTH-ei-rPt"/>
-                            <constraint firstItem="d6j-f5-OxY" firstAttribute="centerX" secondItem="vSf-V9-iYT" secondAttribute="centerX" id="Orb-HU-nkJ"/>
                             <constraint firstItem="d6j-f5-OxY" firstAttribute="bottom" secondItem="w0c-Pf-b79" secondAttribute="bottom" constant="100" id="Qg6-0g-xVO"/>
+                            <constraint firstItem="d6j-f5-OxY" firstAttribute="trailing" secondItem="uBq-m2-RcB" secondAttribute="trailing" constant="-75" id="WZZ-aj-BgN"/>
                             <constraint firstItem="uBq-m2-RcB" firstAttribute="centerY" secondItem="VFt-VG-dF2" secondAttribute="centerY" id="XBu-gY-vuZ"/>
                             <constraint firstItem="VFt-VG-dF2" firstAttribute="leading" secondItem="7rj-ml-CO6" secondAttribute="leading" id="cy6-TP-apN"/>
                             <constraint firstItem="VFt-VG-dF2" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="50" id="d0J-dh-SDa"/>
@@ -154,6 +153,13 @@
                         <outlet property="descLabel" destination="w0c-Pf-b79" id="F38-Je-d22"/>
                         <outlet property="goButton" destination="aUW-7i-Z6m" id="bBh-OC-eyi"/>
                         <outlet property="phraseField" destination="VFt-VG-dF2" id="JxM-oR-giw"/>
+                        <outlet property="topKanjiLabel" destination="d6j-f5-OxY" id="Z9e-Nv-I82"/>
+                        <outletCollection property="topKanjiButtons" destination="FyN-hW-0Ob" collectionClass="NSMutableArray" id="d5h-wm-Pas"/>
+                        <outletCollection property="topKanjiButtons" destination="hcz-bQ-Ulg" collectionClass="NSMutableArray" id="Olr-oH-46X"/>
+                        <outletCollection property="topKanjiButtons" destination="Oqg-9o-Jj5" collectionClass="NSMutableArray" id="zKw-LD-yJg"/>
+                        <outletCollection property="topKanjiButtons" destination="lk0-cR-G35" collectionClass="NSMutableArray" id="gaS-D2-FxA"/>
+                        <outletCollection property="topKanjiButtons" destination="pTJ-t2-4At" collectionClass="NSMutableArray" id="Nmu-gP-Oac"/>
+                        <outletCollection property="topKanjiButtons" destination="5DT-bb-vjy" collectionClass="NSMutableArray" id="C4Q-Z0-bmc"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

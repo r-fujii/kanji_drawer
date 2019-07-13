@@ -34,6 +34,14 @@ extension UIImage {
         return flipHorizontalImage!
     }
     
+    func resizeImage(width: CGFloat, height: CGFloat) -> UIImage {
+        UIGraphicsBeginImageContext(CGSize(width: width, height: height))
+        self.draw(in: CGRect(x: 0, y: 0, width: width, height: height))
+        let resizedImage: UIImage! = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return resizedImage
+    }
 }
 
 class ViewController: UIViewController, UITextFieldDelegate {
@@ -43,31 +51,47 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     @IBOutlet weak var goButton: UIButton!
     @IBOutlet weak var clearButton: UIButton!
+    
+    @IBOutlet weak var topKanjiLabel: UILabel!
+    @IBOutlet var topKanjiButtons: [UIButton]!
 
     var kanjiPath = UIBezierPath()
     var addedView = [UIImageView]()
+    
+    var topKanjis = [UIImage]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
         // initial settings
+        
         // background
         self.view.backgroundColor = UIColor(patternImage: UIImage(named: "washi")!)
         
+        // input field
         phraseField.delegate = self
-        
         phraseField.text = "タピオカ"
         phraseField.placeholder = "フレーズを入力"
         phraseField.clearButtonMode = .whileEditing
         phraseField.layer.cornerRadius = 10.0
         
+        // buttons
         goButton.setTitleColor(.white, for: .normal)
         goButton.backgroundColor = .osColorBlue
         goButton.layer.cornerRadius = 5.0
         clearButton.setTitleColor(.white, for: .normal)
         clearButton.backgroundColor = .osColorRed
         clearButton.layer.cornerRadius = 5.0
+        
+        topKanjiLabel.isHidden = true
+        for kanjiButton in topKanjiButtons {
+            kanjiButton.isHidden = true
+            kanjiButton.setTitleColor(UIColor.clear, for: .normal)
+            kanjiButton.backgroundColor = .white
+            kanjiButton.layer.cornerRadius = 10.0
+            kanjiButton.clipsToBounds = true
+        }
         
         descLabel.isHidden = true
     }
@@ -80,7 +104,15 @@ class ViewController: UIViewController, UITextFieldDelegate {
         self.clearCanvas(sender)
         // ここでbezier pathの受け取りに成功
         self.getBezierPathFor(phrase: phrase, {kanjiData in
-            let kanjiCanvas = self.drawKanji(CGRect(x: 0, y: 0, width: 300, height: 300), kanjiData: kanjiData)
+            let kanjiImage = self.drawKanji(CGRect(x: 0, y: 0, width: 300, height: 300), kanjiData: kanjiData)
+            
+            // TODO: drawKanjiの返り値を複数漢字(list)化
+            // 0..<kanjiImage.count, kanjiImage -> kanjiImages[i]に修正
+            for _ in 0..<6 {
+                self.topKanjis.append(kanjiImage)
+            }
+            
+            let kanjiCanvas = UIImageView(image: kanjiImage)
             
             self.descLabel.text = "「\(phrase)」に近い意味の漢字"
             self.descLabel.isHidden = false
@@ -90,6 +122,14 @@ class ViewController: UIViewController, UITextFieldDelegate {
             
             self.view.addSubview(kanjiCanvas)
             self.addedView.append(kanjiCanvas)
+            
+            self.topKanjiLabel.isHidden = false
+            
+            for i in 0..<6 {
+                self.topKanjiButtons[i].setBackgroundImage(self.topKanjis[i].resizeImage(width: 60, height: 60), for: .normal)
+                self.topKanjiButtons[i].isHidden = false
+            }
+            
         
         UIView.animate(withDuration: 2.0, animations: {
                 kanjiCanvas.alpha = 1.0
@@ -101,6 +141,10 @@ class ViewController: UIViewController, UITextFieldDelegate {
     @IBAction func clearCanvas(_ sender: Any) {
         
         descLabel.isHidden = true
+        topKanjiLabel.isHidden = true
+        for kanjiButton in topKanjiButtons {
+            kanjiButton.isHidden = true
+        }
         
         if self.addedView.count > 0 {
             self.addedView.forEach {imView in
@@ -185,10 +229,11 @@ class ViewController: UIViewController, UITextFieldDelegate {
         
     }
     
-    func drawKanji(_ rect: CGRect, kanjiData: (shape: Int, paths: [UIBezierPath])) -> UIImageView {
+    func drawKanji(_ rect: CGRect, kanjiData: (shape: Int, paths: [UIBezierPath])) -> UIImage {
+        
+        let imageView = UIImageView(frame: rect)
         
         if kanjiData.shape == 0 {
-            let imageView = UIImageView(frame: rect)
             // そもそも1パーツで構成されている場合
             
             let path = kanjiData.paths[0]
@@ -215,13 +260,10 @@ class ViewController: UIViewController, UITextFieldDelegate {
             let tmpView = UIImageView(image: image!.flipVertical())
             tmpView.center = imageView.center
             imageView.addSubview(tmpView)
-            
-            return imageView
         }
             
         else if kanjiData.shape == 1 {
             // とりあえず左右2パーツ('⿰')に対応する分岐を実装
-            let imageView = UIImageView(frame: rect)
             
             let ratio: [CGFloat] = [0.0, 0.4, 1.0] // 左右パーツの幅比率 (累積)
             let rects = [CGSize(width: rect.width * (ratio[1] - ratio[0]), height: rect.height), CGSize(width: rect.width * (ratio[2] - ratio[1]), height: rect.height)]
@@ -258,14 +300,10 @@ class ViewController: UIViewController, UITextFieldDelegate {
                 imSubView.frame.origin = CGPoint(x: rect.width * ratio[i], y: 0.0)
                 imageView.addSubview(imSubView)
             }
-            
-            return imageView
         }
             
         else if kanjiData.shape == 2 {
             // 上下2パーツ('⿱')に対応する分岐
-            let imageView = UIImageView(frame: rect)
-            
             let ratio: [CGFloat] = [0.0, 0.4, 1.0] // 左右パーツの幅比率 (累積)
             let rects = [CGSize(width: rect.width, height: rect.height * (ratio[1] - ratio[0])), CGSize(width: rect.width, height: rect.height * (ratio[2] - ratio[1]))]
             
@@ -301,14 +339,26 @@ class ViewController: UIViewController, UITextFieldDelegate {
                 imSubView.frame.origin = CGPoint(x: 0.0, y: rect.height * ratio[i])
                 imageView.addSubview(imSubView)
             }
-            
-            return imageView
         }
             
         else {
             print("Not implemented yet.")
-            return UIImageView()
         }
+        
+        // convert to image
+        
+        UIGraphicsBeginImageContextWithOptions(imageView.bounds.size, false, 0.0)
+        let context : CGContext = UIGraphicsGetCurrentContext()!
+        
+        imageView.layer.render(in: context)
+        
+        // contextのビットマップをUIImageとして取得する
+        let image : UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+        
+        // contextを閉じる
+        UIGraphicsEndImageContext()
+        
+        return image
         
     }
     
@@ -320,6 +370,10 @@ class ViewController: UIViewController, UITextFieldDelegate {
         view.endEditing(true)
         sendPhrase(goButton!)
         return false
+    }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
     }
     
 }
