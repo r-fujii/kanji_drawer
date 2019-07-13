@@ -74,7 +74,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         phraseField.text = "タピオカ"
         phraseField.placeholder = "フレーズを入力"
         phraseField.clearButtonMode = .whileEditing
-        phraseField.layer.cornerRadius = 10.0
+        phraseField.layer.cornerRadius = 20.0
         
         // buttons
         goButton.setTitleColor(.white, for: .normal)
@@ -88,7 +88,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         for kanjiButton in topKanjiButtons {
             kanjiButton.isHidden = true
             kanjiButton.setTitleColor(UIColor.clear, for: .normal)
-            kanjiButton.backgroundColor = .white
+            kanjiButton.backgroundColor = UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.5)
             kanjiButton.layer.cornerRadius = 10.0
             kanjiButton.clipsToBounds = true
         }
@@ -126,7 +126,8 @@ class ViewController: UIViewController, UITextFieldDelegate {
             self.topKanjiLabel.isHidden = false
             
             for i in 0..<6 {
-                self.topKanjiButtons[i].setBackgroundImage(self.topKanjis[i].resizeImage(width: 60, height: 60), for: .normal)
+                self.topKanjiButtons[i].setImage(self.topKanjis[i].resizeImage(width: 60, height: 60), for: .normal)
+                self.topKanjiButtons[i].imageEdgeInsets = UIEdgeInsets(top: 5, left: 25, bottom: 5, right: 25)
                 self.topKanjiButtons[i].isHidden = false
             }
             
@@ -145,6 +146,8 @@ class ViewController: UIViewController, UITextFieldDelegate {
         for kanjiButton in topKanjiButtons {
             kanjiButton.isHidden = true
         }
+        
+        topKanjis = [UIImage]()
         
         if self.addedView.count > 0 {
             self.addedView.forEach {imView in
