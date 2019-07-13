@@ -17,6 +17,10 @@ extension UIColor {
     class var osColorRed: UIColor {
         return UIColor(red: 1.0, green: 59.0/255.0, blue: 48.0/255.0, alpha: 0.8)
     }
+    
+    class var osColorGreen: UIColor {
+        return UIColor(red: 76.0/255.0, green: 217.0/255.0, blue: 100.0/255.0, alpha: 1.0)
+    }
 }
 
 extension UIImage {
@@ -114,7 +118,9 @@ class ViewController: UIViewController, UITextFieldDelegate {
             
             let kanjiCanvas = UIImageView(image: kanjiImage)
             
-            self.descLabel.text = "「\(phrase)」に近い意味の漢字"
+            let attrText = NSMutableAttributedString(string: "「\(phrase)」に近い意味の漢字")
+            attrText.addAttribute(.foregroundColor, value: UIColor.osColorGreen, range: NSMakeRange(1, phrase.count))
+            self.descLabel.attributedText = attrText
             self.descLabel.isHidden = false
             
             kanjiCanvas.frame.origin = CGPoint(x: 100, y: self.descLabel.frame.maxY + 75)
@@ -126,11 +132,12 @@ class ViewController: UIViewController, UITextFieldDelegate {
             self.topKanjiLabel.isHidden = false
             
             for i in 0..<6 {
-                self.topKanjiButtons[i].setImage(self.topKanjis[i].resizeImage(width: 60, height: 60), for: .normal)
+                let image = self.topKanjis[i].resizeImage(width: 60, height: 60).withRenderingMode(.alwaysTemplate)
+                self.topKanjiButtons[i].setImage(image, for: .normal)
                 self.topKanjiButtons[i].imageEdgeInsets = UIEdgeInsets(top: 5, left: 25, bottom: 5, right: 25)
+                self.topKanjiButtons[i].tintColor = .darkGray
                 self.topKanjiButtons[i].isHidden = false
             }
-            
         
         UIView.animate(withDuration: 2.0, animations: {
                 kanjiCanvas.alpha = 1.0
