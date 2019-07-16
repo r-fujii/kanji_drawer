@@ -167,9 +167,9 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     func getBezierPathFor(phrase: String, _ after:@escaping ((Int, [UIBezierPath])) -> ()){
         // receive closure as argument... to resolve the problem of object being returned before response arrives (asynchronous processing)
-        
+
         let request: Parameters = ["data": phrase]
-        Alamofire.request("http://localhost:2036/post", method: .post, parameters: request).responseJSON {response in
+        Alamofire.request("http://amaretto01:2036/post", method: .post, parameters: request).responseJSON {response in
             switch response.result {
             case .success:
                 let kanjiPaths = self.parsePath(response: response)

@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 import os
 from fontTools.ttLib import TTFont
 from fontTools.pens.recordingPen import RecordingPen
+from logzero import logger
 
 
 def get_glyph(glyph_set, cmap, char):
@@ -37,7 +38,9 @@ def index():
 @app.route('/post', methods=['POST'])
 def post():
     phrase = request.form['data']
+    logger.info('got post request from app: phrase = "{}"'.format(phrase))
     seq = get_model_output(phrase)
+    logger.info('receieved model output')
     paths = []
 
     shape = shape_dict.get(seq[0], 0)
@@ -52,6 +55,7 @@ def post():
             glyph.draw(recording_pen)
             paths.append(recording_pen.value)
 
+    logger.info('return kanji path data to app')
     return jsonify({"shape": shape, "paths": {i: {"path": path} for i, path in enumerate(paths)}})
 
 
