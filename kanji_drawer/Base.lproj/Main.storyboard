@@ -56,7 +56,7 @@
                                     </button>
                                 </subviews>
                             </stackView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Neural Kanji Generator (仮)" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7rj-ml-CO6">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="ニューラル漢字生成" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7rj-ml-CO6">
                                 <rect key="frame" x="50" y="95" width="734" height="40"/>
                                 <fontDescription key="fontDescription" name="HiraMinProN-W3" family="Hiragino Mincho ProN" pointSize="40"/>
                                 <nil key="textColor"/>
@@ -141,11 +141,24 @@
                                     </stackView>
                                 </subviews>
                             </stackView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eHS-z2-tcg">
+                                <rect key="frame" x="487" y="605" width="50" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="50" id="BQM-vv-exa"/>
+                                    <constraint firstAttribute="height" constant="50" id="cyK-HR-9eo"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="HiraMinProN-W3" family="Hiragino Mincho ProN" pointSize="16"/>
+                                <state key="normal" title="共有"/>
+                                <connections>
+                                    <action selector="shareKanjiImage:" destination="BYZ-38-t0r" eventType="touchUpInside" id="HQh-mi-hsY"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="vSf-V9-iYT" firstAttribute="centerX" secondItem="d6j-f5-OxY" secondAttribute="centerX" id="1fs-cH-Jeo"/>
+                            <constraint firstItem="vSf-V9-iYT" firstAttribute="leading" secondItem="eHS-z2-tcg" secondAttribute="trailing" constant="50" id="9tx-NL-UV3"/>
                             <constraint firstItem="w0c-Pf-b79" firstAttribute="top" secondItem="VFt-VG-dF2" secondAttribute="bottom" constant="100" id="J6p-9J-ypt"/>
                             <constraint firstItem="VFt-VG-dF2" firstAttribute="top" secondItem="7rj-ml-CO6" secondAttribute="bottom" constant="50" id="L0Y-Rk-IQl"/>
                             <constraint firstItem="d6j-f5-OxY" firstAttribute="bottom" secondItem="w0c-Pf-b79" secondAttribute="bottom" constant="100" id="Qg6-0g-xVO"/>
@@ -154,6 +167,7 @@
                             <constraint firstItem="VFt-VG-dF2" firstAttribute="leading" secondItem="7rj-ml-CO6" secondAttribute="leading" id="cy6-TP-apN"/>
                             <constraint firstItem="VFt-VG-dF2" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="50" id="d0J-dh-SDa"/>
                             <constraint firstItem="w0c-Pf-b79" firstAttribute="leading" secondItem="VFt-VG-dF2" secondAttribute="leading" id="dBJ-gL-g5C"/>
+                            <constraint firstItem="vSf-V9-iYT" firstAttribute="bottom" secondItem="eHS-z2-tcg" secondAttribute="bottom" id="hpk-Wv-wkh"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="uBq-m2-RcB" secondAttribute="trailing" constant="50" id="k28-MO-Kd2"/>
                             <constraint firstItem="uBq-m2-RcB" firstAttribute="trailing" secondItem="7rj-ml-CO6" secondAttribute="trailing" id="lcS-da-ZXH"/>
                             <constraint firstItem="7rj-ml-CO6" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="75" id="mL2-UP-FPn"/>
@@ -171,6 +185,7 @@
                         <outlet property="descLabel" destination="w0c-Pf-b79" id="F38-Je-d22"/>
                         <outlet property="goButton" destination="aUW-7i-Z6m" id="bBh-OC-eyi"/>
                         <outlet property="phraseField" destination="VFt-VG-dF2" id="JxM-oR-giw"/>
+                        <outlet property="shareButton" destination="eHS-z2-tcg" id="Lhk-hh-vi2"/>
                         <outlet property="topKanjiLabel" destination="d6j-f5-OxY" id="Z9e-Nv-I82"/>
                         <outletCollection property="topKanjiButtons" destination="FyN-hW-0Ob" collectionClass="NSMutableArray" id="d5h-wm-Pas"/>
                         <outletCollection property="topKanjiButtons" destination="hcz-bQ-Ulg" collectionClass="NSMutableArray" id="Olr-oH-46X"/>
@@ -187,7 +202,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="306" y="-626"/>
+            <point key="canvasLocation" x="305.75539568345329" y="-626.43884892086328"/>
         </scene>
         <!--history-->
         <scene sceneID="INr-E5-8eS">

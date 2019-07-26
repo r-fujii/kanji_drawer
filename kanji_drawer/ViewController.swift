@@ -9,6 +9,7 @@
 import UIKit
 import Alamofire
 import SwiftyJSON
+import Accounts
 
 extension UIColor {
     class var osColorBlue: UIColor {
@@ -58,7 +59,9 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     @IBOutlet weak var topKanjiLabel: UILabel!
     @IBOutlet var topKanjiButtons: [UIButton]!
-
+    
+    @IBOutlet weak var shareButton: UIButton!
+    
     var kanjiPath = UIBezierPath()
     var addedView = [UIImageView]()
     
@@ -98,6 +101,12 @@ class ViewController: UIViewController, UITextFieldDelegate {
         }
         
         descLabel.isHidden = true
+        
+        shareButton.isHidden = true
+        shareButton.setTitleColor(.white, for: .normal)
+        shareButton.backgroundColor = .osColorBlue
+        shareButton.layer.cornerRadius = 25.0
+        shareButton.layer.masksToBounds = true
     }
     
     @IBAction func sendPhrase(_ sender: Any) {
@@ -130,6 +139,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
             self.addedView.append(kanjiCanvas)
             
             self.topKanjiLabel.isHidden = false
+            // self.shareButton.isHidden = false
             
             for i in 0..<6 {
                 let image = self.topKanjis[i].resizeImage(width: 60, height: 60).withRenderingMode(.alwaysTemplate)
@@ -150,6 +160,8 @@ class ViewController: UIViewController, UITextFieldDelegate {
         
         descLabel.isHidden = true
         topKanjiLabel.isHidden = true
+        shareButton.isHidden = true
+        
         for kanjiButton in topKanjiButtons {
             kanjiButton.isHidden = true
         }
@@ -169,6 +181,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         // receive closure as argument... to resolve the problem of object being returned before response arrives (asynchronous processing)
 
         let request: Parameters = ["data": phrase]
+        // replace with "http://localhost:2036/post" for testing
         Alamofire.request("http://amaretto01:2036/post", method: .post, parameters: request).responseJSON {response in
             switch response.result {
             case .success:
@@ -369,6 +382,20 @@ class ViewController: UIViewController, UITextFieldDelegate {
         UIGraphicsEndImageContext()
         
         return image
+        
+    }
+    
+    @IBAction func shareKanjiImage(_ sender: Any) {
+        guard let shareImage = topKanjis.first else {
+            return
+        }
+        
+        let shareText = "「\(phraseField.text!)」に最も近い意味の感じはこれ！"
+        
+        let activities = [shareText, shareImage] as [Any]
+        let activityVC = UIActivityViewController(activityItems: activities, applicationActivities: nil)
+        activityVC.popoverPresentationController?.sourceView = self.view
+        self.present(activityVC, animated: true, completion: nil)
         
     }
     
