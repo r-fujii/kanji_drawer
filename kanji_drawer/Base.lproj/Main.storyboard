@@ -96,45 +96,63 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="vSf-V9-iYT">
-                                <rect key="frame" x="587" y="513" width="116" height="142"/>
+                                <rect key="frame" x="591" y="513" width="108" height="142"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="ccL-qS-ZAh">
-                                        <rect key="frame" x="0.0" y="0.0" width="116" height="34"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="108" height="34"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="249" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FyN-hW-0Ob">
-                                                <rect key="frame" x="0.0" y="0.0" width="48" height="34"/>
-                                                <state key="normal" title="漢字1"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="47" height="34"/>
+                                                <state key="normal" title="0000"/>
+                                                <connections>
+                                                    <action selector="switchDisplayedKanji:" destination="BYZ-38-t0r" eventType="touchUpInside" id="3Xg-DV-gRr"/>
+                                                </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hcz-bQ-Ulg">
-                                                <rect key="frame" x="68" y="0.0" width="48" height="34"/>
-                                                <state key="normal" title="漢字2"/>
+                                                <rect key="frame" x="67" y="0.0" width="41" height="34"/>
+                                                <state key="normal" title="0001"/>
+                                                <connections>
+                                                    <action selector="switchDisplayedKanji:" destination="BYZ-38-t0r" eventType="touchUpInside" id="kKl-3z-53T"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                         <viewLayoutGuide key="safeArea" id="Qur-px-JFF"/>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="dmH-6p-z6R">
-                                        <rect key="frame" x="0.0" y="54" width="116" height="34"/>
+                                        <rect key="frame" x="0.0" y="54" width="108" height="34"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Oqg-9o-Jj5">
-                                                <rect key="frame" x="0.0" y="0.0" width="48" height="34"/>
-                                                <state key="normal" title="漢字3"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="44" height="34"/>
+                                                <state key="normal" title="0002"/>
+                                                <connections>
+                                                    <action selector="switchDisplayedKanji:" destination="BYZ-38-t0r" eventType="touchUpInside" id="eFz-7z-gHN"/>
+                                                </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lk0-cR-G35">
-                                                <rect key="frame" x="68" y="0.0" width="48" height="34"/>
-                                                <state key="normal" title="漢字4"/>
+                                                <rect key="frame" x="64" y="0.0" width="44" height="34"/>
+                                                <state key="normal" title="0003"/>
+                                                <connections>
+                                                    <action selector="switchDisplayedKanji:" destination="BYZ-38-t0r" eventType="touchUpInside" id="94t-A4-it1"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="lov-vs-2zN">
-                                        <rect key="frame" x="0.0" y="108" width="116" height="34"/>
+                                        <rect key="frame" x="0.0" y="108" width="108" height="34"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="249" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pTJ-t2-4At">
-                                                <rect key="frame" x="0.0" y="0.0" width="48" height="34"/>
-                                                <state key="normal" title="漢字5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="44" height="34"/>
+                                                <state key="normal" title="0004"/>
+                                                <connections>
+                                                    <action selector="switchDisplayedKanji:" destination="BYZ-38-t0r" eventType="touchUpInside" id="qpz-Z9-u0C"/>
+                                                </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5DT-bb-vjy">
-                                                <rect key="frame" x="68" y="0.0" width="48" height="34"/>
-                                                <state key="normal" title="漢字6"/>
+                                                <rect key="frame" x="64" y="0.0" width="44" height="34"/>
+                                                <state key="normal" title="0005"/>
+                                                <connections>
+                                                    <action selector="switchDisplayedKanji:" destination="BYZ-38-t0r" eventType="touchUpInside" id="r5g-jD-Qop"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                         <viewLayoutGuide key="safeArea" id="UI4-8z-Qm9"/>
@@ -142,7 +160,7 @@
                                 </subviews>
                             </stackView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eHS-z2-tcg">
-                                <rect key="frame" x="487" y="605" width="50" height="50"/>
+                                <rect key="frame" x="491" y="605" width="50" height="50"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="50" id="BQM-vv-exa"/>
                                     <constraint firstAttribute="height" constant="50" id="cyK-HR-9eo"/>

@@ -117,15 +117,11 @@ class ViewController: UIViewController, UITextFieldDelegate {
         self.clearCanvas(sender)
         // ここでbezier pathの受け取りに成功
         self.getBezierPathFor(phrase: phrase, {kanjiData in
-            let kanjiImage = self.drawKanji(CGRect(x: 0, y: 0, width: 300, height: 300), kanjiData: kanjiData)
+            let kanjiImages = self.drawKanji(CGRect(x: 0, y: 0, width: 300, height: 300), kanjiData: kanjiData)
             
-            // TODO: drawKanjiの返り値を複数漢字(list)化
-            // 0..<kanjiImage.count, kanjiImage -> kanjiImages[i]に修正
-            for _ in 0..<6 {
-                self.topKanjis.append(kanjiImage)
-            }
+            self.topKanjis = kanjiImages
             
-            let kanjiCanvas = UIImageView(image: kanjiImage)
+            let kanjiCanvas = UIImageView(image: self.topKanjis[0])
             
             let attrText = NSMutableAttributedString(string: "「\(phrase)」に近い意味の漢字")
             attrText.addAttribute(.foregroundColor, value: UIColor.osColorGreen, range: NSMakeRange(1, phrase.count))
@@ -177,213 +173,239 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     }
     
-    func getBezierPathFor(phrase: String, _ after:@escaping ((Int, [UIBezierPath])) -> ()){
+    func getBezierPathFor(phrase: String, _ completion:@escaping (([[(score: Float, path: UIBezierPath)]]) -> ())) {
         // receive closure as argument... to resolve the problem of object being returned before response arrives (asynchronous processing)
-
+        
         let request: Parameters = ["data": phrase]
+        
+        let group = DispatchGroup()
+        
+        // initialize
+        var p1 = [(score: Float, path: UIBezierPath)]() // path for first component
+        var p2 = [(score: Float, path: UIBezierPath)]() // for second
+        
+        group.enter()
         // replace with "http://localhost:2036/post" for testing
-        Alamofire.request("http://amaretto01:2036/post", method: .post, parameters: request).responseJSON {response in
+        Alamofire.request("http://localhost:2036/post", method: .post, parameters: request).responseJSON {response in
             switch response.result {
             case .success:
-                let kanjiPaths = self.parsePath(response: response)
-                after(kanjiPaths)
+                p1 = self.parsePaths(response: response)
             case .failure:
                 return
             }
+            print("got response from 1st model")
+            group.leave()
+        }
+        
+        group.enter()
+        Alamofire.request("http://localhost:2037/post", method: .post, parameters: request).responseJSON {response in
+            switch response.result {
+            case .success:
+                p2 = self.parsePaths(response: response)
+            case .failure:
+                return
+            }
+            print("got response from 2nd model")
+            group.leave()
+        }
+        
+        group.notify(queue: .main) {
+            print("received all response")
+            completion([p1, p2])
         }
         
     }
     
-    func parsePath(response: DataResponse<Any>) -> (shape: Int, paths: [UIBezierPath]) {
+    func parsePaths(response: DataResponse<Any>) -> [(score: Float, path: UIBezierPath)] {
         
-        var kanjiPaths = [UIBezierPath]()
+        var paths = [(score: Float, path: UIBezierPath)]()
         guard let result = response.result.value else {
-            return (0, kanjiPaths)
+            return paths
         }
         
         // json形式でPython fonttoolsのbezier pathを受け取る
         let json = JSON(result)
+        let pathsData = json["paths"]
         
-        let shape = json["shape"].intValue
-        let paths = json["paths"]
-        
-        for i in 0..<paths.count {
-            let kanjiPath = UIBezierPath()
+        for rank in 1...pathsData.count {
+            // TODO 複数取ってこれるようにしたけどこれをどう返すか
             
-            let pathI = paths[String(i)]
-            for (_, path) in pathI["path"] {
-                let type = path[0]
+            let path = UIBezierPath()
+            
+            let pathData = pathsData[String(rank)]
+            let predScore = pathData["score"].floatValue
+            
+            for (_, p) in pathData["path"] {
+                let type = p[0]
                 
                 // starting points
                 if type == "moveTo" {
-                    let coord = path[1][0]
-                    let p1: CGPoint = CGPoint(x: coord[0].intValue, y: coord[1].intValue)
-                    kanjiPath.move(to: p1)
+                    let coord = p[1][0]
+                    let pt1: CGPoint = CGPoint(x: coord[0].intValue, y: coord[1].intValue)
+                    path.move(to: pt1)
                 }
                     
                     // draw lines linearly
                 else if type == "lineTo" {
-                    let coord = path[1][0]
-                    let p1: CGPoint = CGPoint(x: coord[0].intValue, y: coord[1].intValue)
-                    kanjiPath.addLine(to: p1)
+                    let coord = p[1][0]
+                    let pt1: CGPoint = CGPoint(x: coord[0].intValue, y: coord[1].intValue)
+                    path.addLine(to: pt1)
                 }
                     
                     // curved lines
                 else if type == "curveTo" {
-                    if var coords = path[1].array, coords.count > 0 {
+                    if var coords = p[1].array, coords.count > 0 {
                         let dest = coords.removeLast()
-                        let pdest: CGPoint = CGPoint(x: dest[0].intValue, y: dest[1].intValue)
+                        let ptdest: CGPoint = CGPoint(x: dest[0].intValue, y: dest[1].intValue)
                         
                         // control points
-                        let p1: CGPoint = CGPoint(x: coords[0][0].intValue, y: coords[0][1].intValue)
-                        let p2: CGPoint = CGPoint(x: coords[1][0].intValue, y: coords[1][1].intValue)
+                        let pt1: CGPoint = CGPoint(x: coords[0][0].intValue, y: coords[0][1].intValue)
+                        let pt2: CGPoint = CGPoint(x: coords[1][0].intValue, y: coords[1][1].intValue)
                         
-                        kanjiPath.addCurve(to: pdest, controlPoint1: p1, controlPoint2: p2)
+                        path.addCurve(to: ptdest, controlPoint1: pt1, controlPoint2: pt2)
                     }
                 }
                     
                 else {
-                    kanjiPath.close()
+                    path.close()
                 }
+                
             }
-            kanjiPaths.append(kanjiPath)
+            
+            paths.append((predScore, path))
+            
         }
-        return (shape, kanjiPaths)
+        
+        return paths
+    }
+    
+    func drawKanji(_ rect: CGRect, kanjiData: [[(score: Float, path: UIBezierPath)]]) -> [UIImage] {
+        
+        var kanjiCombi = [(score: Float, path1: UIBezierPath, path2: UIBezierPath)]()
+        
+        let pathsFirst = kanjiData[0] // へんモデルに対応
+        let pathsSecond = kanjiData[1]
+        
+        for i in 0..<pathsFirst.count {
+            for j in 0..<pathsSecond.count {
+                let score = pathsFirst[i].score + pathsSecond[j].score
+                kanjiCombi.append((score: score, path1: pathsFirst[i].path, path2: pathsSecond[j].path))
+            }
+        }
+        
+        kanjiCombi.sort{ $0.score > $1.score }
+        
+        
+        var images = [UIImage]()
+        
+        for i in 0..<6 {
+            // とりあえず左右2パーツ('⿰')に配置してみる
+            let imageView = UIImageView(frame: rect)
+            // へんに対応
+            let path1 = kanjiCombi[i].path1
+            var pathArea = path1.bounds
+
+            var OriginTransform = CGAffineTransform(translationX: -pathArea.minX, y: -pathArea.minY)
+
+            var scaleFit = min(rect.width / (pathArea.maxX - pathArea.minX), rect.height / (pathArea.maxY - pathArea.minY))
+            var fitTransform = CGAffineTransform(scaleX: scaleFit, y: scaleFit)
+
+            var transform = OriginTransform.concatenating(fitTransform)
+            path1.apply(transform)
+
+            UIGraphicsBeginImageContextWithOptions(path1.bounds.size, false, 0.0)
+
+            UIColor.black.setFill()
+            path1.fill()
+
+            path1.stroke()
+
+            let image1 = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+
+            let imSubView1 = UIImageView(frame: rect)
+            var tmpView = UIImageView(image: image1!.flipVertical())
+            tmpView.center = imSubView1.center
+            imSubView1.addSubview(tmpView)
+
+            var shrinkTransform = CGAffineTransform(scaleX: 0.4, y: 1.0)
+            imSubView1.transform = shrinkTransform
+            imSubView1.frame.origin = CGPoint(x: 0.0, y: 0.0)
+            imageView.addSubview(imSubView1)
+            
+            // つくりに対応
+            let path2 = kanjiCombi[i].path2
+            pathArea = path2.bounds
+            
+            OriginTransform = CGAffineTransform(translationX: -pathArea.minX, y: -pathArea.minY)
+            
+            scaleFit = min(rect.width / (pathArea.maxX - pathArea.minX), rect.height / (pathArea.maxY - pathArea.minY))
+            fitTransform = CGAffineTransform(scaleX: scaleFit, y: scaleFit)
+            
+            transform = OriginTransform.concatenating(fitTransform)
+            path2.apply(transform)
+            
+            UIGraphicsBeginImageContextWithOptions(path2.bounds.size, false, 0.0)
+            
+            UIColor.black.setFill()
+            path2.fill()
+            
+            path2.stroke()
+            
+            let image2 = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+            
+            let imSubView2 = UIImageView(frame: rect)
+            tmpView = UIImageView(image: image2!.flipVertical())
+            tmpView.center = imSubView2.center
+            imSubView2.addSubview(tmpView)
+            
+            shrinkTransform = CGAffineTransform(scaleX: 0.6, y: 1.0)
+            imSubView2.transform = shrinkTransform
+            imSubView2.frame.origin = CGPoint(x: rect.width * 0.4, y: 0.0)
+            imageView.addSubview(imSubView2)
+            
+            // convert to image
+            UIGraphicsBeginImageContextWithOptions(imageView.bounds.size, false, 0.0)
+            let context: CGContext = UIGraphicsGetCurrentContext()!
+            
+            imageView.layer.render(in: context)
+            
+            // contextのビットマップをUIImageとして取得する
+            let image: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+            
+            // contextを閉じる
+            UIGraphicsEndImageContext()
+            
+            images.append(image)
+        }
+        
+        return images
         
     }
     
-    func drawKanji(_ rect: CGRect, kanjiData: (shape: Int, paths: [UIBezierPath])) -> UIImage {
-        
-        let imageView = UIImageView(frame: rect)
-        
-        if kanjiData.shape == 0 {
-            // そもそも1パーツで構成されている場合
-            
-            let path = kanjiData.paths[0]
-            let pathArea = path.bounds
-            
-            let OriginTransform = CGAffineTransform(translationX: -pathArea.minX, y: -pathArea.minY)
-            
-            let scale = min(rect.width / (pathArea.maxX - pathArea.minX), rect.height / (pathArea.maxY - pathArea.minY))
-            let scaleTransform = CGAffineTransform(scaleX: scale, y: scale)
-            
-            let transform = OriginTransform.concatenating(scaleTransform)
-            path.apply(transform)
-            
-            UIGraphicsBeginImageContextWithOptions(path.bounds.size, false, 0.0)
-            
-            UIColor.black.setFill()
-            path.fill()
-            
-            path.stroke()
-            
-            let image = UIGraphicsGetImageFromCurrentImageContext()
-            UIGraphicsEndImageContext()
-            
-            let tmpView = UIImageView(image: image!.flipVertical())
-            tmpView.center = imageView.center
-            imageView.addSubview(tmpView)
+    @IBAction func switchDisplayedKanji(_ sender: UIButton) {
+        guard let labelTapped = sender.titleLabel?.text else {
+            return
         }
-            
-        else if kanjiData.shape == 1 {
-            // とりあえず左右2パーツ('⿰')に対応する分岐を実装
-            
-            let ratio: [CGFloat] = [0.0, 0.4, 1.0] // 左右パーツの幅比率 (累積)
-            let rects = [CGSize(width: rect.width * (ratio[1] - ratio[0]), height: rect.height), CGSize(width: rect.width * (ratio[2] - ratio[1]), height: rect.height)]
-            
-            for i in 0..<min(kanjiData.paths.count, rects.count) {
-                
-                let path = kanjiData.paths[i]
-                let pathArea = path.bounds
-                let OriginTransform = CGAffineTransform(translationX: -pathArea.minX, y: -pathArea.minY)
-                
-                let scaleFit = min(rect.width / (pathArea.maxX - pathArea.minX), rect.height / (pathArea.maxY - pathArea.minY))
-                let fitTransform = CGAffineTransform(scaleX: scaleFit, y: scaleFit)
-                
-                let transform = OriginTransform.concatenating(fitTransform)
-                path.apply(transform)
-                
-                UIGraphicsBeginImageContextWithOptions(path.bounds.size, false, 0.0)
-                
-                UIColor.black.setFill()
-                path.fill()
-                
-                path.stroke()
-                
-                let image = UIGraphicsGetImageFromCurrentImageContext()
-                UIGraphicsEndImageContext()
-                
-                let imSubView = UIImageView(frame: rect)
-                let tmpView = UIImageView(image: image!.flipVertical())
-                tmpView.center = imSubView.center
-                imSubView.addSubview(tmpView)
-                
-                let shrinkTransform = CGAffineTransform(scaleX: ratio[i + 1] - ratio[i], y: 1.0)
-                imSubView.transform = shrinkTransform
-                imSubView.frame.origin = CGPoint(x: rect.width * ratio[i], y: 0.0)
-                imageView.addSubview(imSubView)
+        
+        let idTapped = Int(labelTapped) ?? 0
+        
+        if self.addedView.count > 0 {
+            self.addedView.forEach {imView in
+                imView.removeFromSuperview()
             }
-        }
-            
-        else if kanjiData.shape == 2 {
-            // 上下2パーツ('⿱')に対応する分岐
-            let ratio: [CGFloat] = [0.0, 0.4, 1.0] // 左右パーツの幅比率 (累積)
-            let rects = [CGSize(width: rect.width, height: rect.height * (ratio[1] - ratio[0])), CGSize(width: rect.width, height: rect.height * (ratio[2] - ratio[1]))]
-            
-            for i in 0..<min(kanjiData.paths.count, rects.count) {
-                
-                let path = kanjiData.paths[i]
-                let pathArea = path.bounds
-                let OriginTransform = CGAffineTransform(translationX: -pathArea.minX, y: -pathArea.minY)
-                
-                let scaleFit = min(rect.width / (pathArea.maxX - pathArea.minX), rect.height / (pathArea.maxY - pathArea.minY))
-                let fitTransform = CGAffineTransform(scaleX: scaleFit, y: scaleFit)
-                
-                let transform = OriginTransform.concatenating(fitTransform)
-                path.apply(transform)
-                
-                UIGraphicsBeginImageContextWithOptions(path.bounds.size, false, 0.0)
-                
-                UIColor.black.setFill()
-                path.fill()
-                
-                path.stroke()
-                
-                let image = UIGraphicsGetImageFromCurrentImageContext()
-                UIGraphicsEndImageContext()
-                
-                let imSubView = UIImageView(frame: rect)
-                let tmpView = UIImageView(image: image!.flipVertical())
-                tmpView.center = imSubView.center
-                imSubView.addSubview(tmpView)
-                
-                let shrinkTransform = CGAffineTransform(scaleX: 1.0, y: ratio[i + 1] - ratio[i])
-                imSubView.transform = shrinkTransform
-                imSubView.frame.origin = CGPoint(x: 0.0, y: rect.height * ratio[i])
-                imageView.addSubview(imSubView)
-            }
-        }
-            
-        else {
-            print("Not implemented yet.")
+            self.addedView = [UIImageView]()
         }
         
-        // convert to image
+        let kanjiCanvas = UIImageView(image: self.topKanjis[idTapped])
         
-        UIGraphicsBeginImageContextWithOptions(imageView.bounds.size, false, 0.0)
-        let context : CGContext = UIGraphicsGetCurrentContext()!
+        kanjiCanvas.frame.origin = CGPoint(x: 100, y: self.descLabel.frame.maxY + 75)
         
-        imageView.layer.render(in: context)
-        
-        // contextのビットマップをUIImageとして取得する
-        let image : UIImage = UIGraphicsGetImageFromCurrentImageContext()!
-        
-        // contextを閉じる
-        UIGraphicsEndImageContext()
-        
-        return image
-        
+        self.view.addSubview(kanjiCanvas)
+        self.addedView.append(kanjiCanvas)
     }
+    
     
     @IBAction func shareKanjiImage(_ sender: Any) {
         guard let shareImage = topKanjis.first else {

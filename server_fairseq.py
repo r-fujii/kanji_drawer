@@ -104,7 +104,7 @@ def make_result(src_str, hypos, tgt_dict, nbest=6):
             tgt_dict=tgt_dict,
             remove_bpe=None,
         )
-        result.hypos.append('{}'.format(hypo_str))
+        result.hypos.append((hypo['score'], '{}'.format(hypo_str)))
         result.pos_scores.append('P\t{}'.format(
             ' '.join(map(
                 lambda x: '{:.4f}'.format(x),
@@ -152,7 +152,6 @@ def get_model_output(phrase, models, task, tgt_dict, translator):
         results += process_batch(translator, batch, tgt_dict)
 
     result = results[0]
-    print(result.src_str)
     return [hypo for hypo in result.hypos]
 
 
@@ -160,8 +159,6 @@ def get_model_output(phrase, models, task, tgt_dict, translator):
 font = TTFont('./ヒラギノ明朝 ProN.ttc', fontNumber=0)
 glyph_set = font.getGlyphSet()
 cmap = font.getBestCmap()
-shape_dict = {shape: i+1 for i, shape in enumerate({'⿱', '⿰'})}
-print(shape_dict)
 
 app = Flask(__name__)
 
@@ -179,24 +176,21 @@ def post():
     logger.info('receieved model output')
     paths = []
 
+    scores = [seq[0] for seq in seqs]
+    seqs = [seq[1][0] for seq in seqs]
+
     for seq in seqs:
         print(seq)
 
-    seq = seqs[0].replace(' ', '')
-    shape = shape_dict.get(seq[0], 0)
-
-    if shape:
-        seq = seq[1:3]
-
-    for char in seq:
+    for seq in seqs:
         recording_pen = RecordingPen()
-        glyph = get_glyph(glyph_set, cmap, char)
+        glyph = get_glyph(glyph_set, cmap, seq)
         if glyph:
             glyph.draw(recording_pen)
             paths.append(recording_pen.value)
 
     logger.info('return kanji path data to app')
-    return jsonify({"shape": shape, "paths": {i: {"path": path} for i, path in enumerate(paths)}})
+    return jsonify({"paths": {rank: {"score": score, "path": path} for rank, (score, path) in enumerate(zip(scores, paths), start=1)}})
 
 
 if __name__ == '__main__':
