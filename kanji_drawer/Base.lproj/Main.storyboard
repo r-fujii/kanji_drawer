@@ -58,7 +58,7 @@
                             </stackView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="ニューラル漢字生成" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7rj-ml-CO6">
                                 <rect key="frame" x="50" y="95" width="734" height="40"/>
-                                <fontDescription key="fontDescription" name="HiraMinProN-W3" family="Hiragino Mincho ProN" pointSize="40"/>
+                                <fontDescription key="fontDescription" name="HiraMinProN-W6" family="Hiragino Mincho ProN" pointSize="40"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -82,7 +82,7 @@
                                     </fragment>
                                     <fragment content="六">
                                         <attributes>
-                                            <color key="NSColor" name="systemGreenColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="NSColor" red="0.58081901069999997" green="0.088427625600000004" blue="0.31863921880000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <font key="NSFont" size="32" name="HiraMinProN-W3"/>
                                         </attributes>
                                     </fragment>
@@ -225,7 +225,7 @@
         <!--history-->
         <scene sceneID="INr-E5-8eS">
             <objects>
-                <viewController id="1dt-2i-qto" sceneMemberID="viewController">
+                <viewController id="1dt-2i-qto" customClass="HistoryViewController" customModule="kanji_drawer" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="dKp-12-CeY">
                         <rect key="frame" x="0.0" y="0.0" width="834" height="1112"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

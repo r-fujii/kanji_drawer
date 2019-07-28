@@ -121,10 +121,17 @@ class ViewController: UIViewController, UITextFieldDelegate {
             
             self.topKanjis = kanjiImages
             
+            // test
+            histEntries.append((kanjiPic: self.topKanjis[0], phrase: phrase))
+            histTableView.beginUpdates()
+            histTableView.insertRows(at: [IndexPath(row: histEntries.count - 1, section: 0)],
+                                      with: .automatic)
+            histTableView.endUpdates()
+            
             let kanjiCanvas = UIImageView(image: self.topKanjis[0])
             
             let attrText = NSMutableAttributedString(string: "「\(phrase)」に近い意味の漢字")
-            attrText.addAttribute(.foregroundColor, value: UIColor.osColorGreen, range: NSMakeRange(1, phrase.count))
+            attrText.addAttribute(.foregroundColor, value: UIColor(red: 128.0/255.0, green: 0.0, blue: 0.0, alpha: 1.0), range: NSMakeRange(1, phrase.count))
             self.descLabel.attributedText = attrText
             self.descLabel.isHidden = false
             
