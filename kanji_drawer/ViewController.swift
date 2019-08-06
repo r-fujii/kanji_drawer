@@ -193,7 +193,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         
         group.enter()
         // replace with "http://localhost:2036/post" for testing
-        Alamofire.request("http://localhost:2036/post", method: .post, parameters: request).responseJSON {response in
+        Alamofire.request("http://fujiiryo-no-MacBook-Air.local:2036/post", method: .post, parameters: request).responseJSON {response in
             switch response.result {
             case .success:
                 p1 = self.parsePaths(response: response)
@@ -205,7 +205,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         }
         
         group.enter()
-        Alamofire.request("http://localhost:2037/post", method: .post, parameters: request).responseJSON {response in
+        Alamofire.request("http://fujiiryo-no-MacBook-Air.local:2037/post", method: .post, parameters: request).responseJSON {response in
             switch response.result {
             case .success:
                 p2 = self.parsePaths(response: response)

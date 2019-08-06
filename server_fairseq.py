@@ -183,8 +183,13 @@ def post():
     att_weights = [seq[1] for seq in seqs]
     seqs = [seq[0][1][0] for seq in seqs]
 
+    print('----- candidates -----')
     for seq in seqs:
         print(seq)
+
+    print('----- attention weights -----')
+    for c, w in zip(phrase, att_weights[0][:-1]):
+         print('{}: {}'.format(c, w))
 
     for seq in seqs:
         recording_pen = RecordingPen()
