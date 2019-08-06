@@ -14,7 +14,7 @@ from fairseq.utils import import_user_module
 ###
 
 Batch = namedtuple('Batch', 'srcs tokens lengths')
-Translation = namedtuple('Translation', 'src_str hypos pos_scores')
+Translation = namedtuple('Translation', 'src_str hypos attention pos_scores')
 
 
 def make_batches(lines, task, max_positions):
@@ -91,6 +91,7 @@ def make_result(src_str, hypos, tgt_dict, nbest=6):
     result = Translation(
         src_str=src_str,
         hypos=[],
+	attention=[],
         pos_scores=[],
     )
 
@@ -105,6 +106,8 @@ def make_result(src_str, hypos, tgt_dict, nbest=6):
             remove_bpe=None,
         )
         result.hypos.append((hypo['score'], '{}'.format(hypo_str)))
+        att_weights = torch.t(hypo['attention'])[1].tolist()
+        result.attention.append(att_weights)
         result.pos_scores.append('P\t{}'.format(
             ' '.join(map(
                 lambda x: '{:.4f}'.format(x),
@@ -152,7 +155,7 @@ def get_model_output(phrase, models, task, tgt_dict, translator):
         results += process_batch(translator, batch, tgt_dict)
 
     result = results[0]
-    return [hypo for hypo in result.hypos]
+    return [(hypo, att) for hypo, att in zip(result.hypos, result.attention)]
 
 
 # settings
@@ -176,8 +179,9 @@ def post():
     logger.info('receieved model output')
     paths = []
 
-    scores = [seq[0] for seq in seqs]
-    seqs = [seq[1][0] for seq in seqs]
+    scores = [seq[0][0] for seq in seqs]
+    att_weights = [seq[1] for seq in seqs]
+    seqs = [seq[0][1][0] for seq in seqs]
 
     for seq in seqs:
         print(seq)
@@ -190,7 +194,7 @@ def post():
             paths.append(recording_pen.value)
 
     logger.info('return kanji path data to app')
-    return jsonify({"paths": {rank: {"score": score, "path": path} for rank, (score, path) in enumerate(zip(scores, paths), start=1)}})
+    return jsonify({"paths": {rank: {"char": char, "score": score, "attention": att, "path": path} for rank, (char, score, att, path) in enumerate(zip(seqs, scores, att_weights, paths), start=1)}})
 
 
 if __name__ == '__main__':
