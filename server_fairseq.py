@@ -106,7 +106,7 @@ def make_result(src_str, hypos, tgt_dict, nbest=6):
             remove_bpe=None,
         )
         result.hypos.append((hypo['score'], '{}'.format(hypo_str)))
-        att_weights = torch.t(hypo['attention'])[1].tolist()
+        att_weights = torch.t(hypo['attention'])[0].tolist()
         result.attention.append(att_weights)
         result.pos_scores.append('P\t{}'.format(
             ' '.join(map(
