@@ -13,6 +13,8 @@ from fairseq.sequence_generator import SequenceGenerator
 from fairseq.utils import import_user_module
 ###
 
+from kanji import score_similarity
+
 Batch = namedtuple('Batch', 'srcs tokens lengths')
 Translation = namedtuple('Translation', 'src_str hypos attention pos_scores')
 
@@ -159,9 +161,12 @@ def get_model_output(phrase, models, task, tgt_dict, translator):
 
 
 # settings
-font = TTFont('./ヒラギノ明朝 ProN.ttc', fontNumber=0)
+font = TTFont('./kanji/ヒラギノ明朝 ProN.ttc', fontNumber=0)
 glyph_set = font.getGlyphSet()
 cmap = font.getBestCmap()
+
+# path for dictionary consisting of 'tukuri' : meaning pairs
+path_dic_tukuri = './kanji/dict.tukuri.txt'
 
 app = Flask(__name__)
 
@@ -183,9 +188,12 @@ def post():
     att_weights = [seq[1] for seq in seqs]
     seqs = [seq[0][1][0] for seq in seqs]
 
+    # small hack for reducing generation time (just return genuine data for 1st candidate for future use)
+    sims_trainexs_tukuri = [score_similarity.get_sim_src(phrase, seqs[0], path_dic_tukuri, 3)] + [[('dummy', 0) for _ in range(3)] for _ in range(len(seqs) - 1)]
+
     print('----- candidates -----')
-    for seq in seqs:
-        print(seq)
+    for seq, sims in zip(seqs, sims_trainexs_tukuri):
+        print(seq, sims, sep=':')
 
     print('----- attention weights -----')
     for c, w in zip(phrase, att_weights[0][:-1]):
@@ -199,7 +207,7 @@ def post():
             paths.append(recording_pen.value)
 
     logger.info('return kanji path data to app')
-    return jsonify({"paths": {rank: {"char": char, "score": score, "attention": att, "path": path} for rank, (char, score, att, path) in enumerate(zip(seqs, scores, att_weights, paths), start=1)}})
+    return jsonify({"paths": {rank: {"char": char, "score": score, "attention": att, "neighbors": sim, "path": path} for rank, (char, score, att, sim, path) in enumerate(zip(seqs, scores, att_weights, sims_trainexs_tukuri, paths), start=1)}})
 
 
 if __name__ == '__main__':
@@ -209,5 +217,6 @@ if __name__ == '__main__':
 
     models, task, tgt_dict, translator = setup_model(args)
 
-    port = int(os.getenv('PORT', 2036))
+    # make sure you are running 'tukuri' model with this script to get correct similar examples
+    port = int(os.getenv('PORT', 2037))
     app.run(host='0.0.0.0', port=port, debug=True)

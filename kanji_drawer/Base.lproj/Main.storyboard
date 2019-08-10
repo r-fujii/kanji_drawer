@@ -238,6 +238,124 @@
             </objects>
             <point key="canvasLocation" x="306" y="169"/>
         </scene>
+        <!--Detail View Controller-->
+        <scene sceneID="RrK-pD-gro">
+            <objects>
+                <viewController storyboardIdentifier="detailView" useStoryboardIdentifierAsRestorationIdentifier="YES" id="c5P-lg-f40" customClass="DetailViewController" customModule="kanji_drawer" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="cKu-W8-r8C">
+                        <rect key="frame" x="0.0" y="0.0" width="834" height="1112"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="k7a-i7-55w">
+                                <rect key="frame" x="357" y="160" width="120" height="120"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="120" id="hRn-Xp-8Bp"/>
+                                    <constraint firstAttribute="height" constant="120" id="jME-zH-s6k"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="descLabel" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.80000000000000004" translatesAutoresizingMaskIntoConstraints="NO" id="0Il-zD-9Du">
+                                <rect key="frame" x="317" y="100" width="200" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="Eck-st-2QF"/>
+                                    <constraint firstAttribute="width" constant="200" id="bXB-4I-tLQ"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="HiraMinProN-W3" family="Hiragino Mincho ProN" pointSize="20"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="Ftt-8j-rkI">
+                                <rect key="frame" x="87" y="360" width="660" height="480"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="OGB-RX-tVd">
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="偏" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DVf-mD-G7c">
+                                                <rect key="frame" x="0.0" y="0.0" width="320" height="40"/>
+                                                <fontDescription key="fontDescription" name="HiraMinProN-W3" family="Hiragino Mincho ProN" pointSize="40"/>
+                                                <color key="textColor" red="0.58081901069999997" green="0.088427625600000004" blue="0.31863921880000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tQf-xu-ykd">
+                                                <rect key="frame" x="0.0" y="80" width="320" height="400"/>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                        <integer key="value" value="10"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                            </view>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="480" id="EhY-LQ-bzn"/>
+                                            <constraint firstAttribute="width" constant="320" id="SBH-W2-f51"/>
+                                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="320" id="bt1-W5-mtc"/>
+                                        </constraints>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="5kS-Jp-P8K">
+                                        <rect key="frame" x="340" y="0.0" width="320" height="480"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="旁" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bsd-OW-dyY">
+                                                <rect key="frame" x="0.0" y="0.0" width="320" height="40"/>
+                                                <fontDescription key="fontDescription" name="HiraMinProN-W3" family="Hiragino Mincho ProN" pointSize="40"/>
+                                                <color key="textColor" red="0.0" green="0.56284224989999998" blue="0.31881666180000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mlf-bn-EDE">
+                                                <rect key="frame" x="0.0" y="80" width="320" height="400"/>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                        <integer key="value" value="10"/>
+                                                    </userDefinedRuntimeAttribute>
+                                                </userDefinedRuntimeAttributes>
+                                            </view>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="320" id="Gi5-tG-54B"/>
+                                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="320" id="p7U-iM-oPI"/>
+                                            <constraint firstAttribute="height" constant="480" id="roy-mU-kNH"/>
+                                        </constraints>
+                                    </stackView>
+                                </subviews>
+                            </stackView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="I7c-kI-H5D">
+                                <rect key="frame" x="677" y="880" width="70" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="70" id="X46-bb-JHc"/>
+                                    <constraint firstAttribute="height" constant="50" id="Yp5-Pg-3Oc"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="HiraMinProN-W3" family="Hiragino Mincho ProN" pointSize="20"/>
+                                <state key="normal" title="戻"/>
+                                <connections>
+                                    <action selector="backPrevScreen:" destination="c5P-lg-f40" eventType="touchUpInside" id="y0K-fO-AdS"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="k7a-i7-55w" firstAttribute="top" secondItem="0Il-zD-9Du" secondAttribute="bottom" constant="10" id="A2x-8z-wKs"/>
+                            <constraint firstItem="I7c-kI-H5D" firstAttribute="trailing" secondItem="Ftt-8j-rkI" secondAttribute="trailing" id="Pip-x7-icj"/>
+                            <constraint firstItem="0Il-zD-9Du" firstAttribute="centerX" secondItem="cKu-W8-r8C" secondAttribute="centerX" id="Sec-Ec-fS9"/>
+                            <constraint firstItem="0Il-zD-9Du" firstAttribute="top" secondItem="zoe-jA-2Pw" secondAttribute="top" constant="80" id="VDh-3N-X3R"/>
+                            <constraint firstItem="Ftt-8j-rkI" firstAttribute="top" secondItem="k7a-i7-55w" secondAttribute="bottom" constant="80" id="d2L-Kd-7Im"/>
+                            <constraint firstItem="Ftt-8j-rkI" firstAttribute="centerX" secondItem="cKu-W8-r8C" secondAttribute="centerX" id="ifa-Mc-UO5"/>
+                            <constraint firstItem="0Il-zD-9Du" firstAttribute="centerX" secondItem="k7a-i7-55w" secondAttribute="centerX" id="l94-DS-QIg"/>
+                            <constraint firstItem="I7c-kI-H5D" firstAttribute="top" secondItem="Ftt-8j-rkI" secondAttribute="bottom" constant="40" id="w1x-PK-Tu1"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="zoe-jA-2Pw"/>
+                    </view>
+                    <connections>
+                        <outlet property="backButton" destination="I7c-kI-H5D" id="8NR-SX-h96"/>
+                        <outlet property="descLabel" destination="0Il-zD-9Du" id="dMz-ja-lIF"/>
+                        <outlet property="henView" destination="tQf-xu-ykd" id="M9F-Yh-6wq"/>
+                        <outlet property="kanjiImageView" destination="k7a-i7-55w" id="xjm-xa-qob"/>
+                        <outlet property="tukuriView" destination="mlf-bn-EDE" id="TKM-Uz-hbz"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="cps-SK-VdO" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1251" y="169"/>
+        </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="rDW-ai-aVA">
             <objects>

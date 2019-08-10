@@ -22,6 +22,8 @@ class ImageCell: UITableViewCell {
         descLabel = UILabel(frame: CGRect(x: 480, y: 50, width: 200, height: 20))
         descLabel.textColor = .darkGray
         descLabel.font = UIFont(name: "Hiragino Mincho ProN", size: 24)
+        descLabel.adjustsFontSizeToFitWidth = true
+        descLabel.minimumScaleFactor = 0.8
         contentView.addSubview(descLabel)
     }
     

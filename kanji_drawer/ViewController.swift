@@ -67,6 +67,8 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     var topKanjis = [UIImage]()
     
+    var phrasesLookedUp = [String]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -78,7 +80,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         
         // input field
         phraseField.delegate = self
-        phraseField.text = "タピオカ"
+        phraseField.text = "意味解析"
         phraseField.placeholder = "フレーズを入力"
         phraseField.clearButtonMode = .whileEditing
         phraseField.layer.cornerRadius = 20.0
@@ -100,6 +102,8 @@ class ViewController: UIViewController, UITextFieldDelegate {
             kanjiButton.clipsToBounds = true
         }
         
+        descLabel.adjustsFontSizeToFitWidth = true
+        descLabel.minimumScaleFactor = 0.8
         descLabel.isHidden = true
         
         shareButton.isHidden = true
@@ -117,12 +121,28 @@ class ViewController: UIViewController, UITextFieldDelegate {
         self.clearCanvas(sender)
         // ここでbezier pathの受け取りに成功
         self.getBezierPathFor(phrase: phrase, {kanjiData in
-            let kanjiImages = self.drawKanji(CGRect(x: 0, y: 0, width: 300, height: 300), kanjiData: kanjiData)
+            let kanjiProps = self.drawKanji(CGRect(x: 0, y: 0, width: 300, height: 300), kanjiData: kanjiData)
             
-            self.topKanjis = kanjiImages
+            self.topKanjis = kanjiProps.images
             
-            // test
-            histEntries.append((kanjiPic: self.topKanjis[0], phrase: phrase))
+            let checkPhraseIdx = { (phrase: String) -> Int in
+                let idx = self.phrasesLookedUp.firstIndex(of: phrase)
+                if let idx = idx {
+                    return Int(idx)
+                } else {
+                    return -1
+                }
+            }
+            
+            let phraseIdx = checkPhraseIdx(phrase)
+            if phraseIdx >= 0 {
+                histEntries.remove(at: phraseIdx)
+                histTableView.deleteRows(at: [IndexPath(row: phraseIdx, section: 0)], with: .automatic)
+                self.phrasesLookedUp.remove(at: phraseIdx)
+            }
+            self.phrasesLookedUp.append(phrase)
+            
+            histEntries.append((kanjiPic: self.topKanjis[0], phrase: phrase, attValues: kanjiProps.attValues[0], neighborStrs: kanjiProps.neighborStrs[0]))
             histTableView.beginUpdates()
             histTableView.insertRows(at: [IndexPath(row: histEntries.count - 1, section: 0)],
                                       with: .automatic)
@@ -180,7 +200,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     }
     
-    func getBezierPathFor(phrase: String, _ completion:@escaping (([[(score: Float, path: UIBezierPath)]]) -> ())) {
+    func getBezierPathFor(phrase: String, _ completion:@escaping (([[(score: Float, attValues: [Float], neighborStrs: [String], path: UIBezierPath)]]) -> ())) {
         // receive closure as argument... to resolve the problem of object being returned before response arrives (asynchronous processing)
         
         let request: Parameters = ["data": phrase]
@@ -188,8 +208,8 @@ class ViewController: UIViewController, UITextFieldDelegate {
         let group = DispatchGroup()
         
         // initialize
-        var p1 = [(score: Float, path: UIBezierPath)]() // path for first component
-        var p2 = [(score: Float, path: UIBezierPath)]() // for second
+        var p1 = [(score: Float, attValues: [Float], neighborStrs: [String], path: UIBezierPath)]() // path for first component
+        var p2 = [(score: Float, attValues: [Float], neighborStrs: [String], path: UIBezierPath)]() // for second
         
         group.enter()
         // replace with "http://localhost:2036/post" for testing
@@ -223,9 +243,9 @@ class ViewController: UIViewController, UITextFieldDelegate {
         
     }
     
-    func parsePaths(response: DataResponse<Any>) -> [(score: Float, path: UIBezierPath)] {
+    func parsePaths(response: DataResponse<Any>) -> [(score: Float, attValues: [Float], neighborStrs: [String], path: UIBezierPath)] {
         
-        var paths = [(score: Float, path: UIBezierPath)]()
+        var paths = [(score: Float, attValues: [Float], neighborStrs: [String], path: UIBezierPath)]()
         guard let result = response.result.value else {
             return paths
         }
@@ -241,6 +261,22 @@ class ViewController: UIViewController, UITextFieldDelegate {
             
             let pathData = pathsData[String(rank)]
             let predScore = pathData["score"].floatValue
+            
+            let atts = pathData["attention"]
+            var attValues = [Float]()
+            for (_, att) in atts {
+                attValues.append(att.floatValue)
+            }
+            
+            let neighborsProp = pathData["neighbors"]
+            let extractStrs = {(neighbors: JSON) -> [String] in
+                var neighborStrs = [String]()
+                for (_, neighborProp) in neighborsProp {
+                    neighborStrs.append(neighborProp[0].stringValue)
+                }
+                return neighborStrs
+            }
+            let neighborStrs = extractStrs(neighborsProp)
             
             for (_, p) in pathData["path"] {
                 let type = p[0]
@@ -279,16 +315,19 @@ class ViewController: UIViewController, UITextFieldDelegate {
                 
             }
             
-            paths.append((predScore, path))
+            paths.append((predScore, attValues, neighborStrs, path))
             
         }
         
         return paths
     }
     
-    func drawKanji(_ rect: CGRect, kanjiData: [[(score: Float, path: UIBezierPath)]]) -> [UIImage] {
+    func drawKanji(_ rect: CGRect, kanjiData: [[(score: Float, attValues: [Float], neighborStrs: [String], path: UIBezierPath)]]) -> (images: [UIImage], attValues: [[[Float]]], neighborStrs: [[[String]]]) {
+        // ex. ) attValues[0] -> for 1st image (combination of hen and tukuri),
+        // attValues[0][0] -> for hen part of that combination
+        // attValues[0][0][0] -> attention value for 1st source token given that hen
         
-        var kanjiCombi = [(score: Float, path1: UIBezierPath, path2: UIBezierPath)]()
+        var kanjiCombi = [(score: Float, path1: UIBezierPath, path2: UIBezierPath, attVal1: [Float], attVal2: [Float], nb1: [String], nb2: [String])]()
         
         let pathsFirst = kanjiData[0] // へんモデルに対応
         let pathsSecond = kanjiData[1]
@@ -296,7 +335,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         for i in 0..<pathsFirst.count {
             for j in 0..<pathsSecond.count {
                 let score = pathsFirst[i].score + pathsSecond[j].score
-                kanjiCombi.append((score: score, path1: pathsFirst[i].path, path2: pathsSecond[j].path))
+                kanjiCombi.append((score: score, path1: pathsFirst[i].path, path2: pathsSecond[j].path, attVal1: pathsFirst[i].attValues, attVal2: pathsSecond[j].attValues, nb1: pathsFirst[i].neighborStrs, nb2: pathsSecond[j].neighborStrs))
             }
         }
         
@@ -304,6 +343,8 @@ class ViewController: UIViewController, UITextFieldDelegate {
         
         
         var images = [UIImage]()
+        var attValues = [[[Float]]]()
+        var neighborStrs = [[[String]]]()
         
         for i in 0..<6 {
             // とりあえず左右2パーツ('⿰')に配置してみる
@@ -385,9 +426,13 @@ class ViewController: UIViewController, UITextFieldDelegate {
             UIGraphicsEndImageContext()
             
             images.append(image)
+            
+            // hen / tukuri data
+            attValues.append([kanjiCombi[i].attVal1, kanjiCombi[i].attVal2])
+            neighborStrs.append([kanjiCombi[i].nb1, kanjiCombi[i].nb2])
         }
         
-        return images
+        return (images: images, attValues: attValues, neighborStrs: neighborStrs)
         
     }
     

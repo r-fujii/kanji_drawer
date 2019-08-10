@@ -9,7 +9,7 @@
 import UIKit
 
 var histTableView = UITableView(frame: CGRect(), style: .grouped)
-var histEntries = [(kanjiPic: UIImage, phrase: String)]()
+var histEntries = [(kanjiPic: UIImage, phrase: String, attValues: [[Float]], neighborStrs: [[String]])]()
 
 class HistoryViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
@@ -42,7 +42,10 @@ class HistoryViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let phrase = histEntries[indexPath.row].phrase
+        let entry = histEntries[indexPath.row]
+        let phrase = entry.phrase
+        let attnValues = entry.attValues
+        let neighborStrs = entry.neighborStrs
         
         let alert = UIAlertController(title: nil,
                                   message: nil,
@@ -57,6 +60,37 @@ class HistoryViewController: UIViewController, UITableViewDelegate, UITableViewD
                     let vc = self.tabBarController?.viewControllers![0] as! ViewController
                     vc.phraseField.text = phrase
                     self.tabBarController?.selectedIndex = 0
+            })
+        )
+        
+        alert.addAction(
+            UIAlertAction(
+                // 画面遷移 (TODO)
+                title: "詳細", style: .default, handler: {(action) -> Void in
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        // execute 0.5 seconds after button is tapped
+                        let vc = self.storyboard!.instantiateViewController(withIdentifier: "detailView") as! DetailViewController
+                        let _ = vc.view // small hack to access outlet properties on target VC, get nil without this line (from https://qiita.com/fromage-blanc/items/3ea2dfe97d4c2d6f0646)
+                        vc.kanjiImageView.image = entry.kanjiPic
+                        vc.descLabel.text = phrase
+                        
+                        // similar phrases in training data
+                        for i in 0 ..< min(neighborStrs[0].count, neighborStrs[1].count, 3) {
+                            // counts assumed to be same, but for safety
+                            vc.neighborStrsLabelsHen[i].text = neighborStrs[0][i]
+                            vc.neighborStrsLabelsTukuri[i].text = neighborStrs[1][i]
+                        }
+                        
+                        // attention
+                        vc.charAttnValues = []
+                        for i in 0 ..< phrase.count {
+                            vc.charAttnValues.append((char: String(Array(phrase)[i]), attns: [attnValues[0][i], attnValues[1][i]]))
+                        }
+                        vc.charAttnValues.append((char: "<EOS>", attns: [attnValues[0][phrase.count], attnValues[1][phrase.count]]))
+                        
+                        vc.modalTransitionStyle = .partialCurl
+                        self.present(vc, animated: true, completion: nil)
+                    }
             })
         )
         
