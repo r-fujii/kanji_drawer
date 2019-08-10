@@ -49,6 +49,13 @@ extension UIImage {
     }
 }
 
+extension String {
+    // remove characters defined in "characterSet" from given string
+    func remove(characterSet: CharacterSet) -> String {
+        return components(separatedBy: characterSet).joined()
+    }
+}
+
 class ViewController: UIViewController, UITextFieldDelegate {
 
     @IBOutlet weak var phraseField: UITextField!
@@ -114,7 +121,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func sendPhrase(_ sender: Any) {
-        guard let phrase = phraseField.text, phraseField.text!.count > 0 else {
+        guard let phrase = phraseField.text?.remove(characterSet: .whitespaces), phraseField.text!.count > 0 else {
             return
         }
         

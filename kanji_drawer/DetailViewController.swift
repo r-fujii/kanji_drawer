@@ -51,18 +51,19 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
         let henViewOrigin = self.view.convert(CGPoint(x: 0, y: 0), from: henView)
         let tukuriViewOrigin = self.view.convert(CGPoint(x: 0, y: 0), from: tukuriView)
+        let subViewWidth = min(self.henView.frame.width, self.tukuriView.frame.width) - 40
         
         // for showing similar examples
         let labelFont = UIFont(name: "Hiragino Mincho ProN", size: 16)
         for i in 0 ..< 3 {
             // numbers
-            neighborStrsLabelsHen[i].frame = CGRect(x: henViewOrigin.x + 20, y: henViewOrigin.y + CGFloat((i + 1) * 40), width: 280, height: 20)
+            neighborStrsLabelsHen[i].frame = CGRect(x: henViewOrigin.x + 20, y: henViewOrigin.y + CGFloat((i + 1) * 40), width: subViewWidth, height: 20)
             neighborStrsLabelsHen[i].font = labelFont
             neighborStrsLabelsHen[i].adjustsFontSizeToFitWidth = true
             neighborStrsLabelsHen[i].minimumScaleFactor = 0.8
             self.view.addSubview(neighborStrsLabelsHen[i])
             
-            neighborStrsLabelsTukuri[i].frame = CGRect(x: tukuriViewOrigin.x + 20, y: tukuriViewOrigin.y + CGFloat((i + 1) * 40), width: 280, height: 20)
+            neighborStrsLabelsTukuri[i].frame = CGRect(x: tukuriViewOrigin.x + 20, y: tukuriViewOrigin.y + CGFloat((i + 1) * 40), width: subViewWidth, height: 20)
             neighborStrsLabelsTukuri[i].font = labelFont
             neighborStrsLabelsTukuri[i].adjustsFontSizeToFitWidth = true
             neighborStrsLabelsTukuri[i].minimumScaleFactor = 0.8
@@ -81,8 +82,8 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
         tukuriTableView.delegate = self
         tukuriTableView.dataSource = self
         
-        henTableView.frame = CGRect(origin: henTableViewOrigin, size: CGSize(width: 280, height: henView.frame.height - 220))
-        tukuriTableView.frame = CGRect(origin: tukuriTableViewOrigin, size: CGSize(width: 280, height: tukuriView.frame.height - 220))
+        henTableView.frame = CGRect(origin: henTableViewOrigin, size: CGSize(width: subViewWidth, height: henView.frame.height - 220))
+        tukuriTableView.frame = CGRect(origin: tukuriTableViewOrigin, size: CGSize(width: subViewWidth, height: tukuriView.frame.height - 220))
         henTableView.backgroundColor = .clear
         tukuriTableView.backgroundColor = .clear
         
