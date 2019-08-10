@@ -99,6 +99,7 @@ class HistoryViewController: UIViewController, UITableViewDelegate, UITableViewD
         )
         
         self.present(alert, animated: true, completion: nil)
+        
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {

@@ -116,12 +116,11 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
             cellIdentifier = "cellTukuri"
         }
         
-        let cell = UITableViewCell(style: .subtitle, reuseIdentifier: cellIdentifier)
+        let cell = AttentionCell(style: .default, reuseIdentifier: cellIdentifier)
         cell.selectionStyle = UITableViewCell.SelectionStyle.none
         
         let cellData = charAttnValues[indexPath.row]
-        cell.textLabel?.text = cellData.char
-        cell.detailTextLabel?.text = "\(cellData.attns[cellID])"
+        cell.setCell(char: cellData.char, attn: cellData.attns[cellID])
         
         return cell
     }
