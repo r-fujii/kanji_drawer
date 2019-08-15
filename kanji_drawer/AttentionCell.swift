@@ -16,8 +16,8 @@ class AttentionCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        charLabel = UILabel(frame: CGRect(x: 20, y: 0, width: 60, height: contentView.frame.height))
-        charLabel.font = UIFont(name: "Hiragino Mincho ProN", size: 16)
+        charLabel = UILabel(frame: CGRect(x: 20, y: 5, width: 60, height: contentView.frame.height))
+        charLabel.font = UIFont(name: "Hiragino Mincho ProN", size: 20)
         charLabel.adjustsFontSizeToFitWidth = true
         charLabel.minimumScaleFactor = 0.8
         contentView.addSubview(charLabel)
@@ -48,8 +48,8 @@ class AttentionCell: UITableViewCell {
         charLabel.text = char
         
         let maximumBarLength = contentView.frame.width - 160
-        attentionBar.frame = CGRect(x: 120, y: contentView.frame.height / 2 - 3, width: maximumBarLength * CGFloat(attn), height: 6)
-        attentionBar.backgroundColor = UIColor(hue: CGFloat(240 / 360 * (1 - attn)), saturation: 0.25, brightness: 0.9, alpha: 1.0)
+        attentionBar.frame = CGRect(x: 120, y: contentView.frame.height / 2, width: maximumBarLength * CGFloat(attn), height: 6)
+        attentionBar.backgroundColor = UIColor(hue: 210 / 360, saturation: min(CGFloat(2 * attn), 1), brightness: 1.0, alpha: 1.0)
     }
 
 }

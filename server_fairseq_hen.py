@@ -14,6 +14,7 @@ from fairseq.utils import import_user_module
 ###
 
 from kanji import score_similarity
+from kanji import kanji_parser
 
 Batch = namedtuple('Batch', 'srcs tokens lengths')
 Translation = namedtuple('Translation', 'src_str hypos attention pos_scores')
@@ -167,6 +168,7 @@ cmap = font.getBestCmap()
 
 # path for dictionary consisting of 'hen' : meaning pairs
 path_dic_hen = './kanji/dict.hen.txt'
+hen_rule = kanji_parser.load_rule('./kanji/rule/hen_rule.json')
 
 app = Flask(__name__)
 
@@ -186,7 +188,9 @@ def post():
 
     scores = [seq[0][0] for seq in seqs]
     att_weights = [seq[1] for seq in seqs]
+
     seqs = [seq[0][1][0] for seq in seqs]
+    shape_cts = [kanji_parser.judge_avl_shapes(hen_rule, seq) for seq in seqs]
 
     # small hack for reducing generation time (just return genuine data for 1st candidate for future use)
     sims_trainexs_hen = [score_similarity.get_sim_src(phrase, seqs[0], path_dic_hen, 3)] + [[('dummy', 0) for _ in range(3)] for _ in range(len(seqs) - 1)]
@@ -207,7 +211,7 @@ def post():
             paths.append(recording_pen.value)
 
     logger.info('return kanji path data to app')
-    return jsonify({"paths": {rank: {"char": char, "score": score, "attention": att, "neighbors": sim, "path": path} for rank, (char, score, att, sim, path) in enumerate(zip(seqs, scores, att_weights, sims_trainexs_hen, paths), start=1)}})
+    return jsonify({"paths": {rank: {"shape": shape_ct, "char": char, "score": score, "attention": att, "neighbors": sim, "path": path} for rank, (shape_ct, char, score, att, sim, path) in enumerate(zip(shape_cts, seqs, scores, att_weights, sims_trainexs_hen, paths), start=1)}})
 
 
 if __name__ == '__main__':

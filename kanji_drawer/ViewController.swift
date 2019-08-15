@@ -207,7 +207,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     }
     
-    func getBezierPathFor(phrase: String, _ completion:@escaping (([[(score: Float, attValues: [Float], neighborStrs: [String], path: UIBezierPath)]]) -> ())) {
+    func getBezierPathFor(phrase: String, _ completion:@escaping (([[(score: Float, cts: (h: Int, v: Int), attValues: [Float], neighborStrs: [String], path: UIBezierPath)]]) -> ())) {
         // receive closure as argument... to resolve the problem of object being returned before response arrives (asynchronous processing)
         
         let request: Parameters = ["data": phrase]
@@ -215,8 +215,8 @@ class ViewController: UIViewController, UITextFieldDelegate {
         let group = DispatchGroup()
         
         // initialize
-        var p1 = [(score: Float, attValues: [Float], neighborStrs: [String], path: UIBezierPath)]() // path for first component
-        var p2 = [(score: Float, attValues: [Float], neighborStrs: [String], path: UIBezierPath)]() // for second
+        var p1 = [(score: Float, cts: (h: Int, v: Int), attValues: [Float], neighborStrs: [String], path: UIBezierPath)]() // path for first component
+        var p2 = [(score: Float, cts: (h: Int, v: Int), attValues: [Float], neighborStrs: [String], path: UIBezierPath)]() // for second
         
         group.enter()
         // replace with "http://localhost:2036/post" for testing
@@ -250,9 +250,9 @@ class ViewController: UIViewController, UITextFieldDelegate {
         
     }
     
-    func parsePaths(response: DataResponse<Any>) -> [(score: Float, attValues: [Float], neighborStrs: [String], path: UIBezierPath)] {
+    func parsePaths(response: DataResponse<Any>) -> [(score: Float, cts: (h: Int, v: Int), attValues: [Float], neighborStrs: [String], path: UIBezierPath)] {
         
-        var paths = [(score: Float, attValues: [Float], neighborStrs: [String], path: UIBezierPath)]()
+        var paths = [(score: Float, cts: (h: Int, v: Int), attValues: [Float], neighborStrs: [String], path: UIBezierPath)]()
         guard let result = response.result.value else {
             return paths
         }
@@ -268,6 +268,8 @@ class ViewController: UIViewController, UITextFieldDelegate {
             
             let pathData = pathsData[String(rank)]
             let predScore = pathData["score"].floatValue
+            let shapeCts = pathData["shape"].arrayValue
+            let cts: (h: Int, v: Int) = (shapeCts[0].intValue, shapeCts[1].intValue)
             
             let atts = pathData["attention"]
             var attValues = [Float]()
@@ -322,19 +324,19 @@ class ViewController: UIViewController, UITextFieldDelegate {
                 
             }
             
-            paths.append((predScore, attValues, neighborStrs, path))
+            paths.append((predScore, cts, attValues, neighborStrs, path))
             
         }
         
         return paths
     }
     
-    func drawKanji(_ rect: CGRect, kanjiData: [[(score: Float, attValues: [Float], neighborStrs: [String], path: UIBezierPath)]]) -> (images: [UIImage], attValues: [[[Float]]], neighborStrs: [[[String]]]) {
+    func drawKanji(_ rect: CGRect, kanjiData: [[(score: Float, cts: (h: Int, v: Int), attValues: [Float], neighborStrs: [String], path: UIBezierPath)]]) -> (images: [UIImage], attValues: [[[Float]]], neighborStrs: [[[String]]]) {
         // ex. ) attValues[0] -> for 1st image (combination of hen and tukuri),
         // attValues[0][0] -> for hen part of that combination
         // attValues[0][0][0] -> attention value for 1st source token given that hen
         
-        var kanjiCombi = [(score: Float, path1: UIBezierPath, path2: UIBezierPath, attVal1: [Float], attVal2: [Float], nb1: [String], nb2: [String])]()
+        var kanjiCombi = [(score: Float, shapeID: Int, path1: UIBezierPath, path2: UIBezierPath, attVal1: [Float], attVal2: [Float], nb1: [String], nb2: [String])]()
         
         let pathsFirst = kanjiData[0] // へんモデルに対応
         let pathsSecond = kanjiData[1]
@@ -342,7 +344,38 @@ class ViewController: UIViewController, UITextFieldDelegate {
         for i in 0..<pathsFirst.count {
             for j in 0..<pathsSecond.count {
                 let score = pathsFirst[i].score + pathsSecond[j].score
-                kanjiCombi.append((score: score, path1: pathsFirst[i].path, path2: pathsSecond[j].path, attVal1: pathsFirst[i].attValues, attVal2: pathsSecond[j].attValues, nb1: pathsFirst[i].neighborStrs, nb2: pathsSecond[j].neighborStrs))
+                
+                // decide direction to build (horizontal -> 0, vertical -> 1)
+                let henH = pathsFirst[i].cts.h
+                let tukuriH = pathsSecond[j].cts.h
+                
+                let henV = pathsFirst[i].cts.v
+                let tukuriV = pathsSecond[j].cts.v
+                
+                let shapeID = {(h: Int, v: Int) -> Int in
+                    if h >= v {
+                        return 0
+                    } else {
+                        return 1
+                    }
+                }
+                var shape = shapeID(henH, tukuriH)
+                
+                var tmpH = 0
+                var tmpV = 0
+                if (henH != 0 && tukuriH != 0) {
+                    tmpH = henH + tukuriH
+                }
+                if (henV != 0 && tukuriV != 0) {
+                    tmpV = henV + tukuriV
+                }
+                if (tmpH != 0 || tmpV != 0) {
+                    shape = shapeID(tmpH, tmpV)
+                }
+                
+                //
+                
+                kanjiCombi.append((score: score, shapeID: shape, path1: pathsFirst[i].path, path2: pathsSecond[j].path, attVal1: pathsFirst[i].attValues, attVal2: pathsSecond[j].attValues, nb1: pathsFirst[i].neighborStrs, nb2: pathsSecond[j].neighborStrs))
             }
         }
         
@@ -356,6 +389,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         for i in 0..<6 {
             // とりあえず左右2パーツ('⿰')に配置してみる
             let imageView = UIImageView(frame: rect)
+            let shape = kanjiCombi[i].shapeID
             // へんに対応
             let path1 = kanjiCombi[i].path1
             var pathArea = path1.bounds
@@ -382,8 +416,14 @@ class ViewController: UIViewController, UITextFieldDelegate {
             var tmpView = UIImageView(image: image1!.flipVertical())
             tmpView.center = imSubView1.center
             imSubView1.addSubview(tmpView)
-
-            var shrinkTransform = CGAffineTransform(scaleX: 0.4, y: 1.0)
+            
+            var shrinkTransform: CGAffineTransform!
+            if shape == 0 {
+                shrinkTransform = CGAffineTransform(scaleX: 0.4, y: 1.0)
+            } else {
+                shrinkTransform = CGAffineTransform(scaleX: 1.0, y: 0.5)
+            }
+            
             imSubView1.transform = shrinkTransform
             imSubView1.frame.origin = CGPoint(x: 0.0, y: 0.0)
             imageView.addSubview(imSubView1)
@@ -415,9 +455,16 @@ class ViewController: UIViewController, UITextFieldDelegate {
             tmpView.center = imSubView2.center
             imSubView2.addSubview(tmpView)
             
-            shrinkTransform = CGAffineTransform(scaleX: 0.6, y: 1.0)
-            imSubView2.transform = shrinkTransform
-            imSubView2.frame.origin = CGPoint(x: rect.width * 0.4, y: 0.0)
+            if shape == 0 {
+                shrinkTransform = CGAffineTransform(scaleX: 0.6, y: 1.0)
+                imSubView2.transform = shrinkTransform
+                imSubView2.frame.origin = CGPoint(x: rect.width * 0.4, y: 0.0)
+            } else {
+                shrinkTransform = CGAffineTransform(scaleX: 1.0, y: 0.5)
+                imSubView2.transform = shrinkTransform
+                imSubView2.frame.origin = CGPoint(x: 0.0, y: rect.height * 0.5)
+            }
+            
             imageView.addSubview(imSubView2)
             
             // convert to image

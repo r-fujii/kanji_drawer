@@ -54,16 +54,16 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
         let subViewWidth = min(self.henView.frame.width, self.tukuriView.frame.width) - 40
         
         // for showing similar examples
-        let labelFont = UIFont(name: "Hiragino Mincho ProN", size: 16)
+        let labelFont = UIFont(name: "Hiragino Mincho ProN", size: 20)
         for i in 0 ..< 3 {
             // numbers
-            neighborStrsLabelsHen[i].frame = CGRect(x: henViewOrigin.x + 20, y: henViewOrigin.y + CGFloat((i + 1) * 40), width: subViewWidth, height: 20)
+            neighborStrsLabelsHen[i].frame = CGRect(x: henViewOrigin.x + 30, y: henViewOrigin.y + CGFloat((i + 1) * 40), width: subViewWidth - 60, height: 20)
             neighborStrsLabelsHen[i].font = labelFont
             neighborStrsLabelsHen[i].adjustsFontSizeToFitWidth = true
             neighborStrsLabelsHen[i].minimumScaleFactor = 0.8
             self.view.addSubview(neighborStrsLabelsHen[i])
             
-            neighborStrsLabelsTukuri[i].frame = CGRect(x: tukuriViewOrigin.x + 20, y: tukuriViewOrigin.y + CGFloat((i + 1) * 40), width: subViewWidth, height: 20)
+            neighborStrsLabelsTukuri[i].frame = CGRect(x: tukuriViewOrigin.x + 30, y: tukuriViewOrigin.y + CGFloat((i + 1) * 40), width: subViewWidth - 60, height: 20)
             neighborStrsLabelsTukuri[i].font = labelFont
             neighborStrsLabelsTukuri[i].adjustsFontSizeToFitWidth = true
             neighborStrsLabelsTukuri[i].minimumScaleFactor = 0.8
@@ -86,6 +86,9 @@ class DetailViewController: UIViewController, UITableViewDelegate, UITableViewDa
         tukuriTableView.frame = CGRect(origin: tukuriTableViewOrigin, size: CGSize(width: subViewWidth, height: tukuriView.frame.height - 220))
         henTableView.backgroundColor = .clear
         tukuriTableView.backgroundColor = .clear
+        
+        henTableView.rowHeight = 50
+        tukuriTableView.rowHeight = 50
         
         self.view.addSubview(henTableView)
         self.view.addSubview(tukuriTableView)
